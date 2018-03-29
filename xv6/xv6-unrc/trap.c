@@ -106,8 +106,8 @@ trap(struct trapframe *tf)
     proc->ticks++;
     if(proc->ticks % TIMESLICE==0){
       cprintf("proceso pid=%d ejecuta el yield en el tick %d",proc->pid,proc->ticks);
+      proc->ticks=0;
       yield();
-   
     }
   }
   // Check if the process has been killed since we yielded
