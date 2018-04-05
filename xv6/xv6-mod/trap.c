@@ -105,7 +105,7 @@ trap(struct trapframe *tf)
   if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER){
     proc->ticks++;
     if(proc->ticks % TIMESLICE==0){
-      cprintf("proceso pid=%d ejecuta el yield en el tick %d \n",proc->pid,proc->ticks);
+      //cprintf("proceso pid=%d ejecuta el yield en el tick %d \n",proc->pid,proc->ticks);
       proc->ticks=0;
       yield();
     }

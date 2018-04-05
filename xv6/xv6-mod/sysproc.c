@@ -89,3 +89,12 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+//
+int
+sys_procstat(void)
+{
+  cprintf("SE EJECUTA EL SYS_PROCSTAT\n");
+  procdump();// ejecutamos la funcion procdump definida en proc.c
+  return 0;
+}
