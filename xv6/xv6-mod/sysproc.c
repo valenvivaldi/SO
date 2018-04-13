@@ -94,7 +94,15 @@ sys_uptime(void)
 int
 sys_procstat(void)
 {
-  cprintf("SE EJECUTA EL SYS_PROCSTAT\n");
+  //cprintf("SE EJECUTA EL SYS_PROCSTAT\n");
   procdump();// ejecutamos la funcion procdump definida en proc.c
   return 0;
+}
+
+// change the priority of the process to the specified value
+//
+void
+sys_setpriority(int priority)
+{
+  
 }
