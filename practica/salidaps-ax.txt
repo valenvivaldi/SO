@@ -1,0 +1,215 @@
+  PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:01 /sbin/init splash
+    2 ?        S      0:00 [kthreadd]
+    4 ?        S<     0:00 [kworker/0:0H]
+    5 ?        S      0:00 [kworker/u8:0]
+    6 ?        S      0:00 [ksoftirqd/0]
+    7 ?        S      0:01 [rcu_sched]
+    8 ?        S      0:00 [rcu_bh]
+    9 ?        S      0:00 [migration/0]
+   10 ?        S<     0:00 [lru-add-drain]
+   11 ?        S      0:00 [watchdog/0]
+   12 ?        S      0:00 [cpuhp/0]
+   13 ?        S      0:00 [cpuhp/1]
+   14 ?        S      0:00 [watchdog/1]
+   15 ?        S      0:00 [migration/1]
+   16 ?        S      0:00 [ksoftirqd/1]
+   18 ?        S<     0:00 [kworker/1:0H]
+   19 ?        S      0:00 [cpuhp/2]
+   20 ?        S      0:00 [watchdog/2]
+   21 ?        S      0:00 [migration/2]
+   22 ?        S      0:00 [ksoftirqd/2]
+   24 ?        S<     0:00 [kworker/2:0H]
+   25 ?        S      0:00 [cpuhp/3]
+   26 ?        S      0:00 [watchdog/3]
+   27 ?        S      0:00 [migration/3]
+   28 ?        S      0:00 [ksoftirqd/3]
+   30 ?        S<     0:00 [kworker/3:0H]
+   31 ?        S      0:00 [kdevtmpfs]
+   32 ?        S<     0:00 [netns]
+   33 ?        S      0:00 [khungtaskd]
+   34 ?        S      0:00 [oom_reaper]
+   35 ?        S<     0:00 [writeback]
+   36 ?        S      0:00 [kcompactd0]
+   37 ?        SN     0:00 [ksmd]
+   38 ?        SN     0:00 [khugepaged]
+   39 ?        S<     0:00 [crypto]
+   40 ?        S<     0:00 [kintegrityd]
+   41 ?        S<     0:00 [bioset]
+   42 ?        S<     0:00 [kblockd]
+   44 ?        S      0:00 [kworker/3:1]
+   45 ?        S      0:00 [kworker/0:1]
+   47 ?        S<     0:00 [ata_sff]
+   48 ?        S<     0:00 [md]
+   49 ?        S<     0:00 [devfreq_wq]
+   50 ?        S<     0:00 [watchdogd]
+   53 ?        S      0:00 [kauditd]
+   54 ?        S      0:00 [kswapd0]
+   55 ?        S<     0:00 [vmstat]
+   56 ?        S<     0:00 [bioset]
+   57 ?        S      0:00 [ecryptfs-kthrea]
+   97 ?        S<     0:00 [kthrotld]
+   98 ?        S<     0:00 [acpi_thermal_pm]
+   99 ?        S<     0:00 [bioset]
+  100 ?        S<     0:00 [bioset]
+  101 ?        S      0:00 [kworker/2:2]
+  102 ?        S<     0:00 [bioset]
+  103 ?        S<     0:00 [bioset]
+  104 ?        S<     0:00 [bioset]
+  105 ?        S<     0:00 [bioset]
+  106 ?        S<     0:00 [bioset]
+  107 ?        S<     0:00 [bioset]
+  108 ?        S      0:00 [scsi_eh_0]
+  109 ?        S<     0:00 [scsi_tmf_0]
+  110 ?        S      0:00 [scsi_eh_1]
+  111 ?        S<     0:00 [scsi_tmf_1]
+  112 ?        S      0:00 [kworker/u8:2]
+  113 ?        S      0:00 [scsi_eh_2]
+  114 ?        S<     0:00 [scsi_tmf_2]
+  115 ?        S      0:00 [scsi_eh_3]
+  116 ?        S<     0:00 [scsi_tmf_3]
+  123 ?        S<     0:00 [ipv6_addrconf]
+  124 ?        S      0:00 [kworker/3:2]
+  145 ?        S<     0:00 [charger_manager]
+  147 ?        S      0:00 [kworker/1:2]
+  151 ?        S<     0:00 [bioset]
+  152 ?        S<     0:00 [bioset]
+  153 ?        S<     0:00 [kworker/2:1H]
+  154 ?        S<     0:00 [kworker/0:1H]
+  155 ?        S<     0:00 [kworker/3:1H]
+  201 ?        S      0:00 [scsi_eh_4]
+  202 ?        S<     0:00 [scsi_tmf_4]
+  211 ?        S      0:00 [usb-storage]
+  212 ?        S      0:00 [i915/signal:0]
+  213 ?        S      0:00 [i915/signal:1]
+  214 ?        S      0:00 [i915/signal:2]
+  217 ?        S<     0:00 [kworker/1:1H]
+  219 ?        S<     0:00 [bioset]
+  295 ?        S<     0:00 [bioset]
+  325 ?        S      0:00 [jbd2/sda7-8]
+  326 ?        S<     0:00 [ext4-rsv-conver]
+  373 ?        Ss     0:00 /lib/systemd/systemd-journald
+  389 ?        Ss     0:00 /sbin/lvmetad -f
+  398 ?        Ss     0:00 /lib/systemd/systemd-udevd
+  472 ?        S      0:00 [irq/29-mei_me]
+  477 ?        S<     0:00 [cfg80211]
+  900 ?        Ss     0:00 /usr/sbin/cron -f
+  906 ?        Ss     0:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+  931 ?        Ssl    0:00 /usr/sbin/ModemManager
+  932 ?        Ss     0:00 /usr/sbin/cupsd -l
+  938 ?        Ssl    0:00 /usr/sbin/thermald --no-daemon --dbus-enable
+  953 ?        Ss     0:00 /usr/sbin/acpid
+  954 ?        Ss     0:00 /lib/systemd/systemd-logind
+  965 ?        Ss     0:00 /sbin/cgmanager -m name=systemd
+  968 ?        Ssl    0:00 /usr/sbin/NetworkManager --no-daemon
+  969 ?        Ss     0:00 avahi-daemon: running [vale-CX-Infinito.local]
+  970 ?        Ssl    0:00 /usr/sbin/rsyslogd -n
+  971 ?        Ssl    0:00 /usr/lib/accountsservice/accounts-daemon
+ 1020 ?        Ssl    0:00 /usr/sbin/lightdm
+ 1030 ?        Ss     0:00 /usr/sbin/irqbalance --pid=/var/run/irqbalance.pid
+ 1032 ?        Ssl    0:00 /usr/sbin/ntpd -p /var/run/ntpd.pid -g -u 109:116
+ 1039 ?        S      0:00 avahi-daemon: chroot helper
+ 1040 ?        Ssl    0:00 /usr/sbin/cups-browsed
+ 1101 ?        Ssl    0:00 /usr/lib/policykit-1/polkitd --no-debug
+ 1117 ?        S      0:00 /usr/lib/postgresql/9.5/bin/postgres -D /var/lib/postgresql/9.5/main -c config_file=/etc/postgresql/9.5/main/postgresql.conf
+ 1118 tty7     Rsl+   0:21 /usr/lib/xorg/Xorg -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+ 1121 ?        S      0:00 /usr/lib/cups/notifier/dbus dbus://
+ 1122 ?        S      0:00 /usr/lib/cups/notifier/dbus dbus://
+ 1132 tty1     Ss+    0:00 /sbin/agetty --noclear tty1 linux
+ 1162 ?        S      0:00 [ath9k-hwrng]
+ 1165 ?        Ss     0:00 /sbin/wpa_supplicant -u -s -O /run/wpa_supplicant
+ 1169 ?        Sl     0:00 lightdm --session-child 12 15
+ 1174 ?        Ss     0:00 /lib/systemd/systemd --user
+ 1175 ?        S      0:00 (sd-pam)
+ 1181 ?        Ssl    0:00 cinnamon-session --session cinnamon
+ 1238 ?        Ss     0:00 /usr/bin/ssh-agent /usr/bin/dbus-launch --exit-with-session /usr/bin/im-launch cinnamon-session-cinnamon
+ 1241 ?        S      0:00 /usr/bin/dbus-launch --exit-with-session /usr/bin/im-launch cinnamon-session-cinnamon
+ 1242 ?        Ss     0:00 /usr/bin/dbus-daemon --fork --print-pid 5 --print-address 7 --session
+ 1254 ?        Ss     0:00 postgres: checkpointer process   
+ 1255 ?        Ss     0:00 postgres: writer process   
+ 1256 ?        Ss     0:00 postgres: wal writer process   
+ 1257 ?        Ss     0:00 postgres: autovacuum launcher process   
+ 1258 ?        Ss     0:00 postgres: stats collector process   
+ 1268 ?        Sl     0:00 /usr/lib/at-spi2-core/at-spi-bus-launcher
+ 1273 ?        S      0:00 /usr/bin/dbus-daemon --config-file=/etc/at-spi2/accessibility.conf --nofork --print-address 3
+ 1275 ?        Sl     0:00 /usr/lib/at-spi2-core/at-spi2-registryd --use-gnome-session
+ 1289 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-clipboard
+ 1290 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-cursor
+ 1292 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-screensaver-proxy
+ 1293 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-a11y-keyboard
+ 1295 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-orientation
+ 1296 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-keyboard
+ 1297 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-media-keys
+ 1298 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-xsettings
+ 1299 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-automount
+ 1301 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-wacom
+ 1302 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-a11y-settings
+ 1304 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-print-notifications
+ 1305 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-mouse
+ 1308 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-background
+ 1309 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-power
+ 1310 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-housekeeping
+ 1311 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-color
+ 1312 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-xrandr
+ 1313 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-sound
+ 1319 ?        S      0:00 /sbin/dhclient -d -q -sf /usr/lib/NetworkManager/nm-dhcp-helper -pf /var/run/dhclient-wlp2s0.pid -lf /var/lib/NetworkManager/dhclient-88e6a954-03ce-43bc-bdf5-44ca91ed040c-wlp2s0.lease -cf /var/lib/NetworkManager/dhclient-wlp2s0.conf wlp2s0
+ 1335 ?        Sl     0:00 /usr/lib/dconf/dconf-service
+ 1347 ?        Sl     0:00 /usr/lib/gvfs/gvfsd
+ 1355 ?        Sl     0:00 /usr/lib/x86_64-linux-gnu/cinnamon-settings-daemon/csd-printer
+ 1360 ?        S      0:00 syndaemon -i 1.0 -t -K -R
+ 1385 ?        Ssl    0:00 /usr/lib/upower/upowerd
+ 1391 ?        SLl    0:00 /usr/bin/gnome-keyring-daemon --start --components=secrets
+ 1406 ?        Ssl    0:00 /usr/lib/colord/colord
+ 1414 ?        Sl     0:00 /usr/lib/gvfs/gvfsd-fuse /run/user/1000/gvfs -f -o big_writes
+ 1416 ?        Sl     0:00 /usr/lib/gvfs/gvfs-udisks2-volume-monitor
+ 1421 ?        S<l    0:00 /usr/bin/pulseaudio --start --log-target=syslog
+ 1422 ?        SNsl   0:00 /usr/lib/rtkit/rtkit-daemon
+ 1443 ?        Ss     0:00 /usr/lib/bluetooth/bluetoothd
+ 1450 ?        Ssl    0:00 /usr/lib/udisks2/udisksd --no-debug
+ 1493 ?        S      0:00 /usr/sbin/dnsmasq --no-resolv --keep-in-foreground --no-hosts --bind-interfaces --pid-file=/var/run/NetworkManager/dnsmasq.pid --listen-address=127.0.1.1 --cache-size=0 --conf-file=/dev/null --proxy-dnssec --enable-dbus=org.freedesktop.NetworkManager.dnsmasq --conf-dir=/etc/NetworkManager/dnsmasq.d
+ 1541 ?        S      0:00 /usr/bin/python3 /usr/bin/cinnamon-launcher
+ 1548 ?        Sl     0:00 /usr/lib/gvfs/gvfs-mtp-volume-monitor
+ 1553 ?        Sl     0:00 /usr/lib/gvfs/gvfs-goa-volume-monitor
+ 1559 ?        Sl     0:00 /usr/lib/gvfs/gvfs-afc-volume-monitor
+ 1565 ?        Sl     0:00 /usr/lib/gvfs/gvfs-gphoto2-volume-monitor
+ 1603 ?        Rl     0:35 cinnamon --replace
+ 1707 ?        Sl     0:00 /usr/bin/python3 /usr/bin/blueman-applet
+ 1708 ?        Sl     0:00 blueberry-obex-agent
+ 1711 ?        Sl     0:00 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+ 1715 ?        Sl     0:02 nemo-desktop
+ 1716 ?        Sl     0:00 nm-applet
+ 1717 ?        Sl     0:00 /usr/bin/python3 /usr/bin/cinnamon-killer-daemon
+ 1736 ?        S      0:00 /usr/lib/bluetooth/obexd
+ 1757 ?        Sl     0:00 /usr/lib/gvfs/gvfsd-metadata
+ 1769 ?        Sl     0:00 /usr/lib/gvfs/gvfsd-trash --spawner :1.29 /org/gtk/gvfs/exec_spaw/0
+ 1785 ?        Sl     0:00 cinnamon-screensaver
+ 1807 ?        S<     0:00 [kworker/u9:0]
+ 1808 ?        S<     0:00 [hci0]
+ 1809 ?        S<     0:00 [hci0]
+ 1810 ?        S<     0:00 [kworker/u9:1]
+ 1823 ?        S<     0:00 [krfcommd]
+ 1870 ?        S      0:00 /usr/bin/python3 /usr/bin/mintupdate-launcher
+ 1873 ?        S      0:00 sh -c /usr/lib/linuxmint/mintUpdate/mintUpdate.py
+ 1874 ?        Sl     0:00 mintUpdate
+ 1946 ?        Sl     0:00 /usr/bin/python3 /usr/share/system-config-printer/applet.py
+ 1961 ?        Sl     1:03 /usr/lib/firefox/firefox
+ 2060 ?        Sl     1:05 /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -intPrefs 5:50|6:-1|18:0|28:1000|34:20|35:5|36:10|45:128|46:10000|51:0|53:400|54:1|55:0|56:0|61:0|62:120|63:120|99:2|100:1|115:5000|125:0|127:0|138:10000|158:24|159:32768|161:0|162:0|170:5|174:1048576|175:100|176:5000|178:600|179:4|180:1|188:20|191:3|204:60000| -boolPrefs 1:0|2:0|4:0|26:1|27:1|30:0|33:1|37:1|38:0|39:0|40:0|43:1|44:1|47:0|48:0|49:0|50:0|52:0|57:1|58:1|59:0|60:1|64:1|65:1|66:0|67:1|68:1|69:0|70:1|73:0|74:0|77:1|78:1|82:1|83:1|84:0|85:0|86:0|88:0|89:0|90:1|91:1|92:1|95:1|96:0|98:0|101:1|102:0|109:0|114:0|117:1|119:1|120:1|122:1|126:0|128:0|130:0|132:1|133:1|139:1|140:0|141:1|143:0|156:0|157:0|160:1|163:0|165:1|167:1|168:0|177:1|182:0|183:0|184:0|185:1|186:0|187:0|189:1|190:1|193:1|196:0|197:0|198:1|199:1|200:0|201:1|202:1|203:1|205:0|206:0|208:0|217:1|218:1|219:0|220:0|221:0| -stringPrefs 3:7;release|97:0;|142:3;1.0|154:332;  ¼½¾ǃː??։֊׃״؉؊٪۔܁܂܃܄ᅟᅠ᜵           ???‐’․‧??????? ‹›⁁⁄⁒ ⅓⅔⅕⅖⅗⅘⅙⅚?⅜⅝⅞⅟∕∶⎮╱⧶⧸⫻⫽⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻　。〔〕〳゠ㅤ㈝㈞㎮㎯㏆㏟꞉︔︕︿﹝﹞?．／｡ﾠ???￼�|155:4;high| -schedulerPrefs 0001,2 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 1961 true tab
+ 2189 ?        Sl     0:03 /usr/lib/gnome-terminal/gnome-terminal-server
+ 2193 pts/0    Ss     0:00 zsh
+ 2338 pts/0    Sl+    0:00 git clone git@github.com:valenvivaldi/SO.git Sistemas Operativos 2018
+ 2339 pts/0    S+     0:00 ssh git@github.com git-upload-pack 'valenvivaldi/SO.git'
+ 2354 pts/0    S+     0:00 git index-pack --stdin -v --fix-thin --keep=fetch-pack 2338 on vale-CX-Infinito --check-self-contained-and-connected
+ 2389 ?        S      0:00 [kworker/1:1]
+ 2397 ?        S      0:00 [kworker/0:0]
+ 2399 ?        S      0:00 [kworker/2:0]
+ 2411 ?        Sl     0:00 /usr/lib/firefox/firefox -contentproc -childID 3 -isForBrowser -intPrefs 5:50|6:-1|18:0|28:1000|34:20|35:5|36:10|45:128|46:10000|51:0|53:400|54:1|55:0|56:0|61:0|62:120|63:120|99:2|100:1|115:5000|125:0|127:0|138:10000|158:24|159:32768|161:0|162:0|170:5|174:1048576|175:100|176:5000|178:600|179:4|180:1|188:20|191:3|204:60000| -boolPrefs 1:0|2:0|4:0|26:1|27:1|30:0|33:1|37:1|38:0|39:0|40:0|43:1|44:1|47:0|48:0|49:0|50:0|52:0|57:1|58:1|59:0|60:1|64:1|65:1|66:0|67:1|68:1|69:0|70:1|73:0|74:0|77:1|78:1|82:1|83:1|84:0|85:0|86:0|88:0|89:0|90:1|91:1|92:1|95:1|96:0|98:0|101:1|102:0|109:0|114:0|117:1|119:1|120:1|122:1|126:0|128:0|130:0|132:1|133:1|139:1|140:0|141:1|143:0|156:0|157:0|160:1|163:0|165:1|167:1|168:0|177:1|182:0|183:0|184:0|185:1|186:0|187:0|189:1|190:1|193:1|196:0|197:0|198:1|199:1|200:0|201:1|202:1|203:1|205:0|206:0|208:0|217:1|218:1|219:0|220:0|221:0| -stringPrefs 3:7;release|97:0;|142:3;1.0|154:332;  ¼½¾ǃː??։֊׃״؉؊٪۔܁܂܃܄ᅟᅠ᜵           ???‐’․‧??????? ‹›⁁⁄⁒ ⅓⅔⅕⅖⅗⅘⅙⅚?⅜⅝⅞⅟∕∶⎮╱⧶⧸⫻⫽⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻　。〔〕〳゠ㅤ㈝㈞㎮㎯㏆㏟꞉︔︕︿﹝﹞?．／｡ﾠ???￼�|155:4;high| -schedulerPrefs 0001,2 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 1961 true tab
+ 2529 pts/1    Ss     0:00 zsh
+ 2669 ?        S      0:00 [kworker/u8:1]
+ 2734 ?        S      0:00 dbus-launch --autolaunch=6a4e92f40a6e4d7e8a650c6c44d79ab2 --binary-syntax --close-stderr
+ 2736 ?        Ss     0:00 /usr/bin/dbus-daemon --fork --print-pid 5 --print-address 7 --session
+ 3240 ?        S      0:00 [kworker/0:2]
+ 3243 ?        S      0:00 [kworker/3:0]
+ 3366 ?        S      0:00 [kworker/u8:3]
+ 3408 ?        S      0:00 [kworker/2:1]
+ 3433 ?        S      0:00 [kworker/1:0]
+ 3434 pts/1    R+     0:00 ps -ax

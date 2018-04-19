@@ -328,6 +328,7 @@ scheduler(void)
         proc = p;
         switchuvm(p);
         p->state = RUNNING;                       //puts in "RUNNING" the chosen process
+        p->timesscheduled++;
         unqueue(level);
 
 
@@ -520,6 +521,7 @@ procdump(void)
     }
     cprintf(" prioridad: %d",p->priority); //shows the priority of the process
     cprintf(" edad: %d",p->age); //shows the priority of the process
+    cprintf(" sch: %d",p->timesscheduled);
     cprintf("\n");
   }
 }

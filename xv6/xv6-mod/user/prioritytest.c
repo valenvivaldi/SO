@@ -20,7 +20,7 @@ prioritytest(void)
   int pid;
   printf(1, "prioritytest\n");
     fork();
-    for (i=0;i<15;i++){
+    for (i=0;i<2;i++){
       pid=fork();
 
       if(pid==0){

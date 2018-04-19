@@ -70,6 +70,7 @@ struct proc {
   struct proc* next;
   ushort priority;
   ushort age;
+  ushort timesscheduled;
 };
 
 // Process memory is laid out contiguously, low addresses first:
