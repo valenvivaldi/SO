@@ -13,5 +13,6 @@
 #define TIMESLICE    40  //amount of ticks per burst of execution
 #define MLFLEVELS    4   // amount of levels in the MLF structure
 #define MLFMAXLEVEL  0   // level of maximum priority in the mlf
-#define AGEFORSCALING    50  // age needed to climb the mlf levels
+#define AGEFORSCALING  50  // age needed to climb the mlf levels
 #define TICKSFORAGING 100  //
+#define ACTIVATEAGING  1  // 1 for activate the priority increase by aging, 0 for disable

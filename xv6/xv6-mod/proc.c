@@ -81,7 +81,8 @@ found:
 
 //PAGEBREAK: 32
 
-void makerunnable (struct proc* p)
+void
+makerunnable (struct proc* p)
 {
   int priority;
   struct proc* lastOfLevel ;
@@ -101,6 +102,18 @@ void makerunnable (struct proc* p)
   }
 }
 
+struct proc*
+unqueue(int level)
+{
+  struct proc* res;
+  res=0;
+  if(ptable.mlf[level]!=0){
+    res =ptable.mlf[level];
+    ptable.mlf[level]=ptable.mlf[level]->next;
+    res->next=0;
+  }
+  return res;
+}
 
 
 // Set up first user process.
@@ -314,10 +327,9 @@ scheduler(void)
         // before jumping back to us.
         proc = p;
         switchuvm(p);
-
         p->state = RUNNING;                       //puts in "RUNNING" the chosen process
-        ptable.mlf[level]=ptable.mlf[level]->next;//DENQUEUE!
-        p->next=0;                                //sets his next to 0
+        unqueue(level);
+
 
         swtch(&cpu->scheduler, proc->context);
         switchkvm();
@@ -515,48 +527,14 @@ procdump(void)
 
 
 void
-raisepriority(struct proc* p )
+raisepriority(int level )         //unqueue, modify the priority and enqueue
 {
-    int level;
-    struct proc* previous;
-    cprintf("se incrementa la prioridad del proceso %d ",p->pid);
-    for(level=MLFMAXLEVEL;level<MLFLEVELS;level++){
-      if(ptable.mlf[level]==p){  // if p is the first of the level, previus is 0
-        //cprintf("el proceso %d esta primero en el nivel %d \n",p->pid,level);
-        previous=0;
-        break;
-      }else{
-        //cprintf("el proceso %d NO esta primero en el nivel %d \n",p->pid,level);
-        previous=ptable.mlf[level];
-
-          while(previous!=0 && previous->next!=p && previous->next!=0){ // if not, previous points to the previous process in mlf
-            previous=previous->next;
-          //  cprintf("previous %p su next es %p",previous,previous->next);
-          }
-
-          if(previous!=0 &&previous->next == p){
-            //cprintf("el proceso %d fue encontrado! en el nivel%d su previo es %p \n",p->pid,level,previous);
-            //  cprintf("avanzo en el nivel \n");
-            break;
-          }
-
-
-      }
+    struct proc* oldprocess;
+    oldprocess = unqueue(level);
+    if(oldprocess){
+      oldprocess->priority = level-1;
+      makerunnable(oldprocess);
     }
-
-    if(level!=MLFMAXLEVEL){  //if is not in the maximum level of the mlf,
-                            //it is extracted from its level and its priority is increased and it is enqueued
-      if(previous){
-        previous->next=p->next;
-      }else{
-        ptable.mlf[level]=p->next;
-      }
-
-      p->priority = level-1;
-      makerunnable(p);
-    }
-
-
 }
 
 
@@ -564,27 +542,25 @@ void
 aging()
 {
   struct proc *p;
-  //revisar si hace falta acquire
-  //cprintf("SE EJECUTA EL AGING\n");
-
+  int level;
   acquire(&ptable.lock);
-  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-
-    if(p->state==RUNNABLE){
-      p->age++;
-      //cprintf("edad del proceso %d\n",p->age);
-      if( (p->age == AGEFORSCALING)){
-        
-        procdump();
-        raisepriority(p);
-        cprintf("---------------------------------\n");
-        procdump();
+  for (level=MLFMAXLEVEL; level < MLFLEVELS; level++) { // i go through the levels of the mlf
+    p =ptable.mlf[level];
+    while(p){
+      p->age++;                             // increase the age
+      if( (p->age == AGEFORSCALING && level != MLFMAXLEVEL)){ // check if the process deserves a priority increase
+        procdump();                         //prints the processes BEFORE the priority increase
+        if(ACTIVATEAGING){                 //ACTIVATEAGING value is in param.h !
+          raisepriority(level);
+          cprintf("---------------------------------\n");
+          procdump();                     //prints the processes AFTER the priority increase
+        }
         cprintf("//////////////////////////////////////\n");
+        p=ptable.mlf[level];              // now will continue with the new first level process
+      }else{
+        p=p->next;                        //from here only increases the age, because they will be younger
       }
-
     }
-
   }
   release(&ptable.lock);
-
 }

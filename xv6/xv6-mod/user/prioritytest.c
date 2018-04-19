@@ -19,9 +19,9 @@ prioritytest(void)
   int i;
   int pid;
   printf(1, "prioritytest\n");
-    pid = fork();
-    for (i=0;i<4;i++){
-      fork();
+    fork();
+    for (i=0;i<15;i++){
+      pid=fork();
 
       if(pid==0){
         break;
@@ -36,6 +36,9 @@ prioritytest(void)
     if(pid == 0){
         //setpriority(3);
         for(;;){
+          if(i %2==0){
+            setpriority(2);
+          }
         }
       }
     }
