@@ -10,7 +10,7 @@ struct cpu {
   volatile uint started;       // Has the CPU started?
   int ncli;                    // Depth of pushcli nesting.
   int intena;                  // Were interrupts enabled before pushcli?
-  
+
   // Cpu-local storage variables; see below
   struct cpu *cpu;
   struct proc *proc;           // The currently-running process.
@@ -68,7 +68,8 @@ struct proc {
   char name[16];               // Process name (debugging)
   ushort ticks;                // Ticks that have been executed during the execution burst
   struct proc* next;
-  int priority;
+  ushort priority;
+  ushort age;
 };
 
 // Process memory is laid out contiguously, low addresses first:

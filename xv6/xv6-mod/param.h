@@ -10,8 +10,8 @@
 #define MAXOPBLOCKS  10  // max # of blocks any FS op writes
 #define LOGSIZE      (MAXOPBLOCKS*3)  // max data sectors in on-disk log
 #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
-#define TIMESLICE    10  //amount of ticks per burst of execution
+#define TIMESLICE    40  //amount of ticks per burst of execution
 #define MLFLEVELS    4   // amount of levels in the MLF structure
-#define MLFMAXLEVEL  0   // level of maximum priority in the mlf 
-#define AGEFORSCALING    4  // age needed to climb the mlf levels
-#define TICKSFORAGING 10
+#define MLFMAXLEVEL  0   // level of maximum priority in the mlf
+#define AGEFORSCALING    50  // age needed to climb the mlf levels
+#define TICKSFORAGING 100  //

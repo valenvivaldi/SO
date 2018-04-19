@@ -58,11 +58,11 @@ found:
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
-  
+
   // Leave room for trap frame.
   sp -= sizeof *p->tf;
   p->tf = (struct trapframe*)sp;
-  
+
   // Set up new context to start executing at forkret,
   // which returns to trapret.
   sp -= 4;
@@ -72,7 +72,7 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
-  
+
   //set priority 0 by default
   p->priority = 0;
 
@@ -87,14 +87,16 @@ void makerunnable (struct proc* p)
   struct proc* lastOfLevel ;
   p->state = RUNNABLE;
   p->next=0;
+  p->age=0;
   priority=p->priority;
   lastOfLevel = ptable.mlf[priority];
+
   if(lastOfLevel ==0){   //If the level does not have processes, it saves the process as the first
     ptable.mlf[priority]=p;
   }else{
     while(lastOfLevel->next != 0){ // if not, I take the first and advance until I reach the last
       lastOfLevel=lastOfLevel->next;
-    } 
+    }
     lastOfLevel->next=p;  //and I keep it as the last
   }
 }
@@ -107,7 +109,7 @@ userinit(void)
 {
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
-  
+
   p = allocproc();
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -137,7 +139,7 @@ int
 growproc(int n)
 {
   uint sz;
-  
+
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
@@ -184,14 +186,14 @@ fork(void)
   np->cwd = idup(proc->cwd);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
- 
+
   pid = np->pid;
 
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   makerunnable(np);
   release(&ptable.lock);
-  
+
   return pid;
 }
 
@@ -302,17 +304,17 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    
+
     for(level = MLFMAXLEVEL; level < MLFLEVELS; level++){
-      
+
       if(ptable.mlf[level] != 0){
-        p = ptable.mlf[level];      
+        p = ptable.mlf[level];
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
         proc = p;
         switchuvm(p);
-        
+
         p->state = RUNNING;                       //puts in "RUNNING" the chosen process
         ptable.mlf[level]=ptable.mlf[level]->next;//DENQUEUE!
         p->next=0;                                //sets his next to 0
@@ -375,12 +377,12 @@ forkret(void)
 
   if (first) {
     // Some initialization functions must be run in the context
-    // of a regular process (e.g., they call sleep), and thus cannot 
+    // of a regular process (e.g., they call sleep), and thus cannot
     // be run from main().
     first = 0;
     initlog();
   }
-  
+
   // Return to "caller", actually trapret (see allocproc).
 }
 
@@ -490,7 +492,7 @@ procdump(void)
   struct proc *p;
   char *state;
   uint pc[10];
-   
+
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
@@ -505,6 +507,84 @@ procdump(void)
         cprintf(" %p", pc[i]);
     }
     cprintf(" prioridad: %d",p->priority); //shows the priority of the process
+    cprintf(" edad: %d",p->age); //shows the priority of the process
     cprintf("\n");
   }
+}
+
+
+
+void
+raisepriority(struct proc* p )
+{
+    int level;
+    struct proc* previous;
+    cprintf("se incrementa la prioridad del proceso %d ",p->pid);
+    for(level=MLFMAXLEVEL;level<MLFLEVELS;level++){
+      if(ptable.mlf[level]==p){  // if p is the first of the level, previus is 0
+        //cprintf("el proceso %d esta primero en el nivel %d \n",p->pid,level);
+        previous=0;
+        break;
+      }else{
+        //cprintf("el proceso %d NO esta primero en el nivel %d \n",p->pid,level);
+        previous=ptable.mlf[level];
+
+          while(previous!=0 && previous->next!=p && previous->next!=0){ // if not, previous points to the previous process in mlf
+            previous=previous->next;
+          //  cprintf("previous %p su next es %p",previous,previous->next);
+          }
+
+          if(previous!=0 &&previous->next == p){
+            //cprintf("el proceso %d fue encontrado! en el nivel%d su previo es %p \n",p->pid,level,previous);
+            //  cprintf("avanzo en el nivel \n");
+            break;
+          }
+
+
+      }
+    }
+
+    if(level!=MLFMAXLEVEL){  //if is not in the maximum level of the mlf,
+                            //it is extracted from its level and its priority is increased and it is enqueued
+      if(previous){
+        previous->next=p->next;
+      }else{
+        ptable.mlf[level]=p->next;
+      }
+
+      p->priority = level-1;
+      makerunnable(p);
+    }
+
+
+}
+
+
+void
+aging()
+{
+  struct proc *p;
+  //revisar si hace falta acquire
+  //cprintf("SE EJECUTA EL AGING\n");
+
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+
+    if(p->state==RUNNABLE){
+      p->age++;
+      //cprintf("edad del proceso %d\n",p->age);
+      if( (p->age == AGEFORSCALING)){
+        
+        procdump();
+        raisepriority(p);
+        cprintf("---------------------------------\n");
+        procdump();
+        cprintf("//////////////////////////////////////\n");
+      }
+
+    }
+
+  }
+  release(&ptable.lock);
+
 }
