@@ -16,3 +16,5 @@
 #define AGEFORSCALING  50  // age needed to climb the mlf levels
 #define TICKSFORAGING 100  //
 #define ACTIVATEAGING  1 // 1 for activate the priority increase by aging, 0 for disable
+#define MAXSEM  10  //
+#define MAXPROCSEM 2

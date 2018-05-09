@@ -15,6 +15,7 @@ struct {
 
 
 
+
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -196,6 +197,12 @@ fork(void)
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
       np->ofile[i] = filedup(proc->ofile[i]);
+
+//duplicates the semaphore array
+  for(i = 0; i < MAXPROCSEM; i++)
+    if(proc->osemaphore[i])
+      np->osemaphore[i] = semaphoredup(proc->osemaphore[i]);
+
   np->cwd = idup(proc->cwd);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));

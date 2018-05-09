@@ -71,6 +71,7 @@ struct proc {
   ushort priority;
   ushort age;
   ushort timesscheduled;
+  struct semaphore *osemaphore[MAXPROCSEM];
 };
 
 // Process memory is laid out contiguously, low addresses first:

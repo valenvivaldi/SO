@@ -55,7 +55,7 @@ int
 argptr(int n, char **pp, int size)
 {
   int i;
-  
+
   if(argint(n, &i) < 0)
     return -1;
   if((uint)i >= proc->sz || (uint)i+size > proc->sz)
@@ -100,6 +100,10 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_procstat(void);
 extern int sys_setpriority(void);
+extern int sys_semget(void);
+extern int sys_semfree(void);
+extern int sys_semup(void);
+extern int sys_semdown(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -125,6 +129,10 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_procstat] sys_procstat,
 [SYS_setpriority] sys_setpriority,
+[SYS_semget] sys_semget,
+[SYS_semfree] sys_semfree,
+[SYS_semdown] sys_semdown,
+[SYS_semup] sys_semup,
 };
 
 void
