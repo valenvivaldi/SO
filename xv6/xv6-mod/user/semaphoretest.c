@@ -1,13 +1,18 @@
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
-
+#include "param.h"
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "fs.h"
+#include "fcntl.h"
+#include "syscall.h"
+#include "traps.h"
+#include "memlayout.h"
 
-#define N 100
-#define CANTCONSUMIDORES 1
-#define CANTPRODUCTORES 1
+#define N 1
+#define CANTCONSUMIDORES 3
+#define CANTPRODUCTORES 10
 
 
 
@@ -29,15 +34,10 @@ printf(int fd, char *s, ...)
 void
 encolar (int nuevo)
 {
-  //printf(1,"antes semdownql de encolar\n" );
   semdown(ql);
-  //printf(1,"despues semdownql de encolar\n" );
   cola[cantcola]=nuevo;
-
   cantcola++;
-  //printf(1,"antes semupql de encolar\n" );
   semup(ql);
-  //printf(1,"depsues semupql de encolar\n" );
 }
 
 int
@@ -45,18 +45,19 @@ desencolar()
 {
   int res;
   int i;
-  //printf(1,"antes semdownql de desencolar\n" );
+  int fd;
   semdown(ql);
-  //printf(1,"despues semdownql de desencolar\n" );
   res =cola[0];
   for(i=0;i<cantcola-1;i++){
     cola[i]=cola[i+1];
   }
-  //printf(1,"antes semupql de desencolar\n" );
+
+  fd =open("archivoP_C", O_CREATE|O_RDWR);
+  printf(fd, "1 \n", res);
+  close(fd);
+
   semup(ql);
-  //printf(1,"depsues semupql de desencolar\n" );
   return res;
-  //printf(1,"fin del desencolar\n" );
 }
 
 
@@ -64,13 +65,12 @@ void
 consumidor(void)
 {
   for(;;) {
-  //  printf(1,"antes semudownempty de consumidor\n" );
     semdown(empty);
-  //  printf(1,"depsues semudownempty de consumidor\n" );
-    printf(1,"%d\n",desencolar() );
-  //  printf(1,"antes semupfull de consumidor\n" );
+    printf(1,"RESTE UNO EN EMPTY\n");
+    //desencolar();
     semup(full);
-  //  printf(1,"depsues semupfull de consumidor\n" );
+    printf(1,"SUME UNO EN FULL\n");
+    printf(1,"-------\n");
   }
 }
 
@@ -80,10 +80,12 @@ productor(void)
   int item=0;
   for(;;) {
     item=item+1;
-    //printf(1,"produje %i \n",item );
     semdown(full);
-    encolar(item);
+    printf(1,"RESTE UNO EN FULL\n");
+    //encolar(item);
     semup(empty);
+    printf(1,"SUME UNO EN EMPTY\n");
+    printf(1,"--------------------\n");
   }
 }
 

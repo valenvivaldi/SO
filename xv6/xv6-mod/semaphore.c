@@ -85,24 +85,22 @@ semdown(int semid)
 {
   struct semaphore * s;
   int indexofsem;
-
+  int res;
   acquire(&semtable.lock);
   indexofsem=semObtained(semid);
-
   if(indexofsem==-1){
-    return -1;
-  }
-  s=proc->osemaphore[indexofsem];
-  //cprintf("intentando agarrar semaforo %d\n",s->id);
-  while (s->value<=0){
-     //cprintf("a dormir! semafoto= %d\n",s->id);
+    res= -1;
+  }else{
+    s=proc->osemaphore[indexofsem];
+    while (s->value<=0){
       sleep(s,&semtable.lock);
+    }
+    s->value--;
+//    printsemaphores();
   }
-  s->value--;
-  //cprintf("semdown! id %d\n",s->id );
-  //cprintf("termino el ciclo del semdown, semvalue = %d\n",s->value);
   release(&semtable.lock);
-  return 0;
+  res= 0;
+  return res;
 }
 
 int
@@ -110,18 +108,20 @@ semup(int semid)
 {
   struct semaphore * s;
   int indexofsem;
+  int res;
   acquire(&semtable.lock);
   indexofsem=semObtained(semid);
   if(indexofsem!=-1){
     s=proc->osemaphore[indexofsem];
     s->value++;
     wakeup(s);
-    release(&semtable.lock);
-    return 0;
+    res =0;
   }else{
-    release(&semtable.lock);
-    return -1;
+    res= -1;
   }
+  //printsemaphores();
+  release(&semtable.lock);
+  return res;
 }
 
 
