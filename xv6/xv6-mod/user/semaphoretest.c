@@ -11,9 +11,11 @@
 #include "traps.h"
 #include "memlayout.h"
 
-#define N 2
-#define CANTPRODUCTORES 5
+#define TAMANIOBUFFER 1
+#define CANTPRODUCTORES 1
 #define CANTCONSUMIDORES 1
+#define CANTPRODUCCIONES 0
+
 
 
 int fd=0;
@@ -33,7 +35,8 @@ void
 encolar (int nuevo)
 {
   semdown(ql);
-  write(fd, &nuevo, sizeof(nuevo));
+  printf(1,"PRODUCE\n");
+  write(fd, "+1", sizeof("+1"));
   semup(ql);
 
 }
@@ -43,7 +46,8 @@ desencolar()
 {
 
   semdown(ql);
-
+  printf(1,"CONSUME\n");
+  write(fd, "-1", sizeof("-1"));
   semup(ql);
 
   return 0;
@@ -55,10 +59,10 @@ consumidor(void)
 {
   for(;;) {
     semdown(empty);
-    printf(1,"RESTE UNO EN EMPTY\n");
+    //printf(1,"RESTE UNO EN EMPTY\n");
     desencolar();
     semup(full);
-    printf(1,"SUME UNO EN FULL\n");
+    //printf(1,"SUME UNO EN FULL\n");
     printf(1,"-------\n");
   }
 }
@@ -66,15 +70,15 @@ consumidor(void)
 void
 productor(void)
 {
-  int item=0;
-  for(;;) {
-    item=item+1;
+  int i;
+  for(i=0;i<CANTPRODUCCIONES;i++) {
+
     semdown(full);
-    printf(1,"RESTE UNO EN FULL\n");
-    encolar(item);
+    //printf(1,"RESTE UNO EN FULL\n");
+    encolar(i);
     semup(empty);
-    printf(1,"SUME UNO EN EMPTY\n");
-    printf(1,"--------------------\n");
+    //printf(1,"SUME UNO EN EMPTY\n");
+    //printf(1,"--------------------\n");
   }
 }
 
@@ -90,7 +94,7 @@ semtest(void)
     pid=fork();
 
     if(pid==0){
-      printf(1,"SOY PRODUCTOR\n" );
+      printf(1,"SE INICIA UN HIJO PRODUCTOR\n" );
       break;
     }
 
@@ -102,7 +106,7 @@ semtest(void)
   for(i=0;i<CANTCONSUMIDORES;i++){
     pid=fork();
     if(pid==0){
-      printf(1,"SOY CONSUMIDOR\n" );
+      printf(1,"SE INICIA UN HIJO CONSUMIDOR\n" );
       break;
     }
 
@@ -120,7 +124,7 @@ main(void)
 {
 
   ql = semget(-1,1);
-  full= semget(-1,N);
+  full= semget(-1,TAMANIOBUFFER);
   empty= semget(-1,0);
 
   semtest();
