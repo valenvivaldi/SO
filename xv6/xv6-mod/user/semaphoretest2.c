@@ -1,4 +1,3 @@
-//original
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 #include "param.h"
@@ -11,12 +10,15 @@
 #include "traps.h"
 #include "memlayout.h"
 
-#define N 2
-#define CANTPRODUCTORES 5
+#define N 1
 #define CANTCONSUMIDORES 1
+#define CANTPRODUCTORES 1
 
 
-int fd=0;
+
+int cola[N];
+int cantcola=0;
+
 int ql;
 int empty;
 int full;
@@ -33,19 +35,58 @@ void
 encolar (int nuevo)
 {
   semdown(ql);
-  write(fd, &nuevo, sizeof(nuevo));
-  semup(ql);
+  if(cantcola==0){
+    printf(1,"productor:encola en el indice0\n" );
+  }
+  if(cantcola==1){
+    printf(1,"productor:encola en el indice 1\n" );
+  }
+  if(cantcola==2){
+    printf(1,"productor:encola en el indice 2\n" );
+  }
+   cola[cantcola]=nuevo;
 
+   cantcola++;
+   if(cantcola==0){
+     printf(1,"productor:aumente cantcola a 0\n" );
+   }
+   if(cantcola==1){
+     printf(1,"productor:aumente cantcola a 1\n" );
+   }
+   if(cantcola==2){
+     printf(1,"productor:aumente cantcola a 2\n" );
+   }
+  semup(ql);
 }
 
 int
 desencolar()
 {
-
+   int res;
+   int i;
+  //int fd;
   semdown(ql);
+  if(cantcola==0){
+    printf(1,"desencola cuando la cola no tiene elementos\n" );
+  }
+  if(cantcola==1){
+    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
+  }
+  if(cantcola==2){
+    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
+  }
+   res =cola[0];
+   cantcola--;
+   for(i=0;i<cantcola;i++){
+     cola[i]=cola[i+1];
+   }
+  // fd =open("archivo", O_CREATE|O_RDWR);
+  // printf(fd, "1 \n", res);
+  // close(fd);
 
   semup(ql);
 
+   return res;
   return 0;
 }
 
@@ -83,8 +124,6 @@ semtest(void)
 {
   int i;
   int pid=1;
-  fd=open("archivo", O_CREATE|O_RDWR);
-
   for(i=0;i<CANTPRODUCTORES;i++){
 
     pid=fork();
@@ -122,7 +161,6 @@ main(void)
   ql = semget(-1,1);
   full= semget(-1,N);
   empty= semget(-1,0);
-
   semtest();
   exit();
 }

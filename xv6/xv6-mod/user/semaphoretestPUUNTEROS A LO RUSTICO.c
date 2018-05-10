@@ -1,4 +1,3 @@
-//original
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 #include "param.h"
@@ -12,11 +11,14 @@
 #include "memlayout.h"
 
 #define N 2
-#define CANTPRODUCTORES 5
 #define CANTCONSUMIDORES 1
+#define CANTPRODUCTORES 1
 
 
-int fd=0;
+
+int cola[N];
+int cantcola=0;
+
 int ql;
 int empty;
 int full;
@@ -30,33 +32,65 @@ printf(int fd, char *s, ...)
 
 
 void
-encolar (int nuevo)
+encolar (int nuevo,int* colap,int* cantcolap)
 {
   semdown(ql);
-  write(fd, &nuevo, sizeof(nuevo));
-  semup(ql);
+  if((*cantcolap)==0){
+    printf(1,"productor:encola en el indice0\n" );
+  }
+  if((*cantcolap)==1){
+    printf(1,"productor:encola en el indice 1\n" );
+  }
+  if((*cantcolap)==2){
+    printf(1,"productor:encola en el indice 2\n" );
+  }
+   *(colap+(*cantcolap))=nuevo;
 
+   (*cantcolap)=(*cantcolap)+1;
+   if((*cantcolap)==0){
+     printf(1,"productor:aumente cantcola a 0\n" );
+   }
+   if((*cantcolap)==1){
+     printf(1,"productor:aumente cantcola a 1\n" );
+   }
+   if((*cantcolap)==2){
+     printf(1,"productor:aumente cantcola a 2\n" );
+   }
+  semup(ql);
 }
 
 int
-desencolar()
+desencolar(int* colap,int* cantcolap)
 {
-
+   int res;
+   int i;
+  //int fd;
   semdown(ql);
+  
+   res =*(cola);
+   *cantcolap=(*cantcolap)-1;
+   for(i=0;i<(*cantcolap);i++){
+     *(cola+i)=*(cola+i+1);
+   }
+  // fd =open("archivo", O_CREATE|O_RDWR);
+  // printf(fd, "1 \n", res);
+  // close(fd);
 
   semup(ql);
 
+   return res;
   return 0;
 }
 
 
 void
-consumidor(void)
+consumidor(int* colap,int* cantcolap)
 {
-  for(;;) {
+  int i;
+  for(i=0;i<2;i++) {
     semdown(empty);
     printf(1,"RESTE UNO EN EMPTY\n");
-    desencolar();
+    desencolar(colap,cantcolap);
     semup(full);
     printf(1,"SUME UNO EN FULL\n");
     printf(1,"-------\n");
@@ -64,14 +98,15 @@ consumidor(void)
 }
 
 void
-productor(void)
+productor(int* colap,int* cantcolap)
 {
   int item=0;
-  for(;;) {
+  int i;
+  for(i=0;i<2;i++) {
     item=item+1;
     semdown(full);
     printf(1,"RESTE UNO EN FULL\n");
-    encolar(item);
+    encolar(item,colap,cantcolap);
     semup(empty);
     printf(1,"SUME UNO EN EMPTY\n");
     printf(1,"--------------------\n");
@@ -79,12 +114,10 @@ productor(void)
 }
 
 void
-semtest(void)
+semtest(int *colap, int* cantcolap)
 {
   int i;
   int pid=1;
-  fd=open("archivo", O_CREATE|O_RDWR);
-
   for(i=0;i<CANTPRODUCTORES;i++){
 
     pid=fork();
@@ -96,7 +129,7 @@ semtest(void)
 
   }
   if(pid==0){
-    productor();
+    productor(colap,cantcolap);
   }
 
   for(i=0;i<CANTCONSUMIDORES;i++){
@@ -108,7 +141,7 @@ semtest(void)
 
   }
   if(pid==0){
-    consumidor();
+    consumidor(colap,cantcolap);
   }
 
 
@@ -122,7 +155,6 @@ main(void)
   ql = semget(-1,1);
   full= semget(-1,N);
   empty= semget(-1,0);
-
-  semtest();
+  semtest(cola,&cantcola);
   exit();
 }

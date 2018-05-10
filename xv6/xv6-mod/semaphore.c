@@ -92,12 +92,15 @@ semdown(int semid)
     res= -1;
   }else{
     s=proc->osemaphore[indexofsem];
-    while (s->value<=0){
+    while (s->value==0){
+      cprintf("quiero bajar el sem %d y no puedo! me voy a dormir!\n",s->id);
       sleep(s,&semtable.lock);
     }
+    cprintf("pude bajar el sem %d\n",s->id);
     s->value--;
 //    printsemaphores();
   }
+  cprintf("semdown del semaforo! %d\n",s->value);
   release(&semtable.lock);
   res= 0;
   return res;
