@@ -29,15 +29,15 @@ printf(int fd, char *s, ...)
 void
 encolar (int nuevo)
 {
-  printf(1,"antes semdownql de encolar\n" );
+  //printf(1,"antes semdownql de encolar\n" );
   semdown(ql);
-  printf(1,"despues semdownql de encolar\n" );
+  //printf(1,"despues semdownql de encolar\n" );
   cola[cantcola]=nuevo;
 
   cantcola++;
-  printf(1,"antes semupql de encolar\n" );
+  //printf(1,"antes semupql de encolar\n" );
   semup(ql);
-  printf(1,"depsues semupql de encolar\n" );
+  //printf(1,"depsues semupql de encolar\n" );
 }
 
 int
@@ -45,32 +45,32 @@ desencolar()
 {
   int res;
   int i;
-  printf(1,"antes semdownql de desencolar\n" );
+  //printf(1,"antes semdownql de desencolar\n" );
   semdown(ql);
-  printf(1,"despues semdownql de desencolar\n" );
+  //printf(1,"despues semdownql de desencolar\n" );
   res =cola[0];
   for(i=0;i<cantcola-1;i++){
     cola[i]=cola[i+1];
   }
-  printf(1,"antes semupql de desencolar\n" );
+  //printf(1,"antes semupql de desencolar\n" );
   semup(ql);
-  printf(1,"depsues semupql de desencolar\n" );
+  //printf(1,"depsues semupql de desencolar\n" );
   return res;
-  printf(1,"fin del desencolar\n" );
+  //printf(1,"fin del desencolar\n" );
 }
 
 
 void
 consumidor(void)
 {
-  while (1) {
-    printf(1,"antes semudownempty de consumidor\n" );
+  for(;;) {
+  //  printf(1,"antes semudownempty de consumidor\n" );
     semdown(empty);
-    printf(1,"depsues semudownempty de consumidor\n" );
-    //printf(1,"%d\n",desencolar() );
-    printf(1,"antes semupfull de consumidor\n" );
+  //  printf(1,"depsues semudownempty de consumidor\n" );
+    printf(1,"%d\n",desencolar() );
+  //  printf(1,"antes semupfull de consumidor\n" );
     semup(full);
-    printf(1,"depsues semupfull de consumidor\n" );
+  //  printf(1,"depsues semupfull de consumidor\n" );
   }
 }
 
@@ -80,9 +80,9 @@ productor(void)
   int item=0;
   for(;;) {
     item=item+1;
-    printf(1,"produje %i \n",item );
+    //printf(1,"produje %i \n",item );
     semdown(full);
-    // encolar(item);
+    encolar(item);
     semup(empty);
   }
 }
@@ -105,6 +105,7 @@ semtest(void)
   if(pid==0){
     productor();
   }
+
   for(i=0;i<CANTCONSUMIDORES;i++){
     pid=fork();
     if(pid==0){
@@ -126,8 +127,8 @@ main(void)
 {
   cantcola=0;
   ql = semget(-1,1);
-  empty= semget(-1,0);
   full= semget(-1,N);
+  empty= semget(-1,0);
   semtest();
   exit();
 }

@@ -22,6 +22,7 @@ semtableinit(void)
 
 int semsearch(int semid);
 int semObtained(int semid);
+void printsemaphores();
 
 int
 semget(int semid,int initvalue)
@@ -29,29 +30,28 @@ semget(int semid,int initvalue)
   int i;
   struct semaphore* s;
   acquire(&semtable.lock);
-  s = semtable.sem+semsearch(semid);
+  s = &semtable.sem[semsearch(semid)];
   if(semid>=0 && s->counter==0){
     return -1;    //el semaforo no esta en uso
   }
 
-  // if(s==-3||s==-4){
-  //   return s;
-  // }    REVISAR COMO HACER ESTA VERIFICACION SIN COMPARAR
 
   if(semid == -1){
         s->id=s-semtable.sem;
         s->counter++;
+        s->value = initvalue;
   }else{
     s->counter++;
-    return semid;
   }
 
   for(i=0;i<MAXPROCSEM;i++){
     if(proc->osemaphore[i]==0){
       proc->osemaphore[i]=s;
+      break;
     }
-    break;
   }
+  //printsemaphores();
+
   if(i==MAXPROCSEM){
     return -2;
   }
@@ -85,21 +85,22 @@ semdown(int semid)
 {
   struct semaphore * s;
   int indexofsem;
-  cprintf("semdown iniciated! %d\n",semid);
+
   acquire(&semtable.lock);
   indexofsem=semObtained(semid);
-  cprintf("el indice del semaforo en el proceso es%d \n",indexofsem);
+
   if(indexofsem==-1){
     return -1;
   }
   s=proc->osemaphore[indexofsem];
+  //cprintf("intentando agarrar semaforo %d\n",s->id);
   while (s->value<=0){
+     //cprintf("a dormir! semafoto= %d\n",s->id);
       sleep(s,&semtable.lock);
-      cprintf("a dormir! semafoto= %d\n",s->id);
   }
   s->value--;
-  cprintf("semdown! %d\n",s->id );
-  cprintf("termino el ciclo del semdown, semvalue = %d\n",s->value);
+  //cprintf("semdown! id %d\n",s->id );
+  //cprintf("termino el ciclo del semdown, semvalue = %d\n",s->value);
   release(&semtable.lock);
   return 0;
 }
@@ -152,13 +153,13 @@ int
 semObtained(int semid){
   int i;
   for(i=0;i<MAXPROCSEM;i++){
-    if(proc->osemaphore[i]->id==semid){
+    if(proc->osemaphore[i]!=0&&proc->osemaphore[i]->id==semid){
       return i;
     }
   }
 
 
-    return 0;
+    return -1;
 
 }
 
@@ -171,4 +172,21 @@ semaphoredup(struct semaphore* s){
   s->counter++;
   release(&semtable.lock);
   return s;
+}
+
+
+void
+printsemaphores()
+{
+  cprintf("SEMAFOROS DEL PROCESO!!!\n");
+  int i;
+  for(i=0;i<MAXPROCSEM;i++){
+    if(proc->osemaphore[i]!=0){
+      cprintf("semaforo id=%d value=%d\n",proc->osemaphore[i]->id,proc->osemaphore[i]->value);
+    }
+  }
+
+
+
+
 }
