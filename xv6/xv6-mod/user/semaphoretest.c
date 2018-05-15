@@ -11,10 +11,10 @@
 #include "traps.h"
 #include "memlayout.h"
 
-#define TAMANIOBUFFER 1
+#define TAMANIOBUFFER 10
 #define CANTPRODUCTORES 1
 #define CANTCONSUMIDORES 1
-#define CANTPRODUCCIONES 0
+#define CANTPRODUCCIONES 200
 
 
 
@@ -87,7 +87,7 @@ semtest(void)
 {
   int i;
   int pid=1;
-  fd=open("archivo", O_CREATE|O_RDWR);
+  fd=open("logProdCons", O_CREATE|O_RDWR);
 
   for(i=0;i<CANTPRODUCTORES;i++){
 

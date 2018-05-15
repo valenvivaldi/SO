@@ -1,0 +1,2789 @@
+diff -rupN xv6-unrc/.bochsrc xv6-mod/.bochsrc
+--- xv6-unrc/.bochsrc	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/.bochsrc	2018-04-18 17:43:18.393432013 -0300
+@@ -0,0 +1,738 @@
++# You may now use double quotes around pathnames, in case
++# your pathname includes spaces.
++
++#=======================================================================
++# CONFIG_INTERFACE
++#
++# The configuration interface is a series of menus or dialog boxes that
++# allows you to change all the settings that control Bochs's behavior.
++# There are two choices of configuration interface: a text mode version
++# called "textconfig" and a graphical version called "wx".  The text
++# mode version uses stdin/stdout and is always compiled in.  The graphical
++# version is only available when you use "--with-wx" on the configure 
++# command.  If you do not write a config_interface line, Bochs will 
++# choose a default for you.
++#
++# NOTE: if you use the "wx" configuration interface, you must also use
++# the "wx" display library.
++#=======================================================================
++#config_interface: textconfig
++#config_interface: wx
++
++#=======================================================================
++# DISPLAY_LIBRARY
++#
++# The display library is the code that displays the Bochs VGA screen.  Bochs 
++# has a selection of about 10 different display library implementations for 
++# different platforms.  If you run configure with multiple --with-* options, 
++# the display_library command lets you choose which one you want to run with.
++# If you do not write a display_library line, Bochs will choose a default for
++# you.
++#
++# The choices are: 
++#   x              use X windows interface, cross platform
++#   win32          use native win32 libraries
++#   carbon         use Carbon library (for MacOS X)
++#   beos           use native BeOS libraries
++#   macintosh      use MacOS pre-10
++#   amigaos        use native AmigaOS libraries
++#   sdl            use SDL library, cross platform
++#   svga           use SVGALIB library for Linux, allows graphics without X11
++#   term           text only, uses curses/ncurses library, cross platform
++#   rfb            provides an interface to AT&T's VNC viewer, cross platform
++#   wx             use wxWidgets library, cross platform
++#   nogui          no display at all
++#
++# NOTE: if you use the "wx" configuration interface, you must also use
++# the "wx" display library.
++#
++# Specific options:
++# Some display libraries now support specific option to control their
++# behaviour. See the examples below for currently supported options.
++#=======================================================================
++#display_library: amigaos
++#display_library: beos
++#display_library: carbon
++#display_library: macintosh
++#display_library: nogui
++#display_library: rfb, options="timeout=60" # time to wait for client
++#display_library: sdl, options="fullscreen" # startup in fullscreen mode
++#display_library: term
++#display_library: win32, options="legacyF12" # use F12 to toggle mouse
++#display_library: wx
++#display_library: x
++
++#=======================================================================
++# ROMIMAGE:
++# The ROM BIOS controls what the PC does when it first powers on.
++# Normally, you can use a precompiled BIOS in the source or binary
++# distribution called BIOS-bochs-latest. The ROM BIOS is usually loaded
++# starting at address 0xf0000, and it is exactly 64k long.
++# You can also use the environment variable $BXSHARE to specify the
++# location of the BIOS.
++# The usage of external large BIOS images (up to 512k) at memory top is
++# now supported, but we still recommend to use the BIOS distributed with
++# Bochs. Now the start address can be calculated from image size.
++#=======================================================================
++romimage: file=$BXSHARE/BIOS-bochs-latest
++#romimage: file=mybios.bin, address=0xfff80000 # 512k at memory top
++#romimage: file=mybios.bin # calculate start address from image size
++
++#=======================================================================
++# CPU:
++# This defines cpu-related parameters inside Bochs:
++#
++#  COUNT:
++#  Set the number of processors when Bochs is compiled for SMP emulation.
++#  Bochs currently supports up to 8 processors. If Bochs is compiled
++#  without SMP support, it won't accept values different from 1.
++#
++#  IPS:
++#  Emulated Instructions Per Second.  This is the number of IPS that bochs
++#  is capable of running on your machine. You can recompile Bochs with
++#  --enable-show-ips option enabled, to find your workstation's capability.
++#  Measured IPS value will then be logged into your log file or status bar
++#  (if supported by the gui).
++#
++#  IPS is used to calibrate many time-dependent events within the bochs 
++#  simulation.  For example, changing IPS affects the frequency of VGA
++#  updates, the duration of time before a key starts to autorepeat, and
++#  the measurement of BogoMips and other benchmarks.
++#
++#  Examples:
++#  Machine                                         Mips
++# ________________________________________________________________
++#  2.1Ghz Athlon XP with Linux 2.6/g++ 3.4         12 to 15 Mips
++#  1.6Ghz Intel P4 with Win2000/g++ 3.3             5 to  7 Mips
++#  650Mhz Athlon K-7 with Linux 2.4.4/egcs-2.91.66  2 to  2.5 Mips
++#  400Mhz Pentium II with Linux 2.0.36/egcs-1.0.3   1 to  1.8 Mips
++#=======================================================================
++cpu: count=2, ips=10000000
++
++#=======================================================================
++# MEGS
++# Set the number of Megabytes of physical memory you want to emulate. 
++# The default is 32MB, most OS's won't need more than that.
++# The maximum amount of memory supported is 2048Mb.
++#=======================================================================
++#megs: 256
++#megs: 128
++#megs: 64
++megs: 32
++#megs: 16
++#megs: 8
++
++#=======================================================================
++# OPTROMIMAGE[1-4]:
++# You may now load up to 4 optional ROM images. Be sure to use a 
++# read-only area, typically between C8000 and EFFFF. These optional
++# ROM images should not overwrite the rombios (located at
++# F0000-FFFFF) and the videobios (located at C0000-C7FFF).
++# Those ROM images will be initialized by the bios if they contain 
++# the right signature (0x55AA) and a valid checksum.
++# It can also be a convenient way to upload some arbitrary code/data
++# in the simulation, that can be retrieved by the boot loader
++#=======================================================================
++#optromimage1: file=optionalrom.bin, address=0xd0000
++#optromimage2: file=optionalrom.bin, address=0xd1000
++#optromimage3: file=optionalrom.bin, address=0xd2000
++#optromimage4: file=optionalrom.bin, address=0xd3000
++
++#optramimage1: file=/path/file1.img, address=0x0010000
++#optramimage2: file=/path/file2.img, address=0x0020000
++#optramimage3: file=/path/file3.img, address=0x0030000
++#optramimage4: file=/path/file4.img, address=0x0040000
++
++#=======================================================================
++# VGAROMIMAGE
++# You now need to load a VGA ROM BIOS into C0000.
++#=======================================================================
++#vgaromimage: file=bios/VGABIOS-elpin-2.40
++vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
++#vgaromimage: file=bios/VGABIOS-lgpl-latest-cirrus
++
++#=======================================================================
++# VGA:
++# Here you can specify the display extension to be used. With the value
++# 'none' you can use standard VGA with no extension. Other supported
++# values are 'vbe' for Bochs VBE and 'cirrus' for Cirrus SVGA support.
++#=======================================================================
++#vga: extension=cirrus
++#vga: extension=vbe
++vga: extension=none
++
++#=======================================================================
++# FLOPPYA:
++# Point this to pathname of floppy image file or device
++# This should be of a bootable floppy(image/device) if you're
++# booting from 'a' (or 'floppy').
++#
++# You can set the initial status of the media to 'ejected' or 'inserted'.
++#   floppya: 2_88=path, status=ejected             (2.88M 3.5" floppy)
++#   floppya: 1_44=path, status=inserted            (1.44M 3.5" floppy)
++#   floppya: 1_2=path, status=ejected              (1.2M  5.25" floppy)
++#   floppya: 720k=path, status=inserted            (720K  3.5" floppy)
++#   floppya: 360k=path, status=inserted            (360K  5.25" floppy)
++#   floppya: 320k=path, status=inserted            (320K  5.25" floppy)
++#   floppya: 180k=path, status=inserted            (180K  5.25" floppy)
++#   floppya: 160k=path, status=inserted            (160K  5.25" floppy)
++#   floppya: image=path, status=inserted           (guess type from image size)
++#
++# The path should be the name of a disk image file.  On Unix, you can use a raw
++# device name such as /dev/fd0 on Linux.  On win32 platforms, use drive letters
++# such as a: or b: as the path.  The parameter 'image' works with image files
++# only. In that case the size must match one of the supported types.
++#=======================================================================
++floppya: 1_44=/dev/fd0, status=inserted
++#floppya: image=../1.44, status=inserted
++#floppya: 1_44=/dev/fd0H1440, status=inserted
++#floppya: 1_2=../1_2, status=inserted
++#floppya: 1_44=a:, status=inserted
++#floppya: 1_44=a.img, status=inserted
++#floppya: 1_44=/dev/rfd0a, status=inserted
++
++#=======================================================================
++# FLOPPYB:
++# See FLOPPYA above for syntax
++#=======================================================================
++#floppyb: 1_44=b:, status=inserted
++floppyb: 1_44=b.img, status=inserted
++
++#=======================================================================
++# ATA0, ATA1, ATA2, ATA3
++# ATA controller for hard disks and cdroms
++#
++# ata[0-3]: enabled=[0|1], ioaddr1=addr, ioaddr2=addr, irq=number
++# 
++# These options enables up to 4 ata channels. For each channel
++# the two base io addresses and the irq must be specified.
++# 
++# ata0 and ata1 are enabled by default with the values shown below
++#
++# Examples:
++#   ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
++#   ata1: enabled=1, ioaddr1=0x170, ioaddr2=0x370, irq=15
++#   ata2: enabled=1, ioaddr1=0x1e8, ioaddr2=0x3e0, irq=11
++#   ata3: enabled=1, ioaddr1=0x168, ioaddr2=0x360, irq=9
++#=======================================================================
++ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
++ata1: enabled=1, ioaddr1=0x170, ioaddr2=0x370, irq=15
++ata2: enabled=0, ioaddr1=0x1e8, ioaddr2=0x3e0, irq=11
++ata3: enabled=0, ioaddr1=0x168, ioaddr2=0x360, irq=9
++
++#=======================================================================
++# ATA[0-3]-MASTER, ATA[0-3]-SLAVE
++#
++# This defines the type and characteristics of all attached ata devices:
++#   type=       type of attached device [disk|cdrom] 
++#   mode=       only valid for disks [flat|concat|external|dll|sparse|vmware3]
++#   mode=       only valid for disks [undoable|growing|volatile]
++#   path=       path of the image
++#   cylinders=  only valid for disks
++#   heads=      only valid for disks
++#   spt=        only valid for disks
++#   status=     only valid for cdroms [inserted|ejected]
++#   biosdetect= type of biosdetection [none|auto], only for disks on ata0 [cmos]
++#   translation=type of translation of the bios, only for disks [none|lba|large|rechs|auto]
++#   model=      string returned by identify device command
++#   journal=    optional filename of the redolog for undoable and volatile disks
++#   
++# Point this at a hard disk image file, cdrom iso file, or physical cdrom
++# device.  To create a hard disk image, try running bximage.  It will help you
++# choose the size and then suggest a line that works with it.
++#
++# In UNIX it may be possible to use a raw device as a Bochs hard disk, 
++# but WE DON'T RECOMMEND IT.  In Windows there is no easy way.
++#
++# In windows, the drive letter + colon notation should be used for cdroms.
++# Depending on versions of windows and drivers, you may only be able to 
++# access the "first" cdrom in the system.  On MacOSX, use path="drive"
++# to access the physical drive.
++#
++# The path is always mandatory. For flat hard disk images created with
++# bximage geometry autodetection can be used (cylinders=0 -> cylinders are
++# calculated using heads=16 and spt=63). For other hard disk images and modes
++# the cylinders, heads, and spt are mandatory.
++#
++# Default values are:
++#   mode=flat, biosdetect=auto, translation=auto, model="Generic 1234"
++#
++# The biosdetect option has currently no effect on the bios
++#
++# Examples:
++#   ata0-master: type=disk, mode=flat, path=10M.sample, cylinders=306, heads=4, spt=17
++#   ata0-slave:  type=disk, mode=flat, path=20M.sample, cylinders=615, heads=4, spt=17
++#   ata1-master: type=disk, mode=flat, path=30M.sample, cylinders=615, heads=6, spt=17
++#   ata1-slave:  type=disk, mode=flat, path=46M.sample, cylinders=940, heads=6, spt=17
++#   ata2-master: type=disk, mode=flat, path=62M.sample, cylinders=940, heads=8, spt=17
++#   ata2-slave:  type=disk, mode=flat, path=112M.sample, cylinders=900, heads=15, spt=17
++#   ata3-master: type=disk, mode=flat, path=483M.sample, cylinders=1024, heads=15, spt=63
++#   ata3-slave:  type=cdrom, path=iso.sample, status=inserted
++#=======================================================================
++ata0-master: type=disk, mode=flat, path="xv6.img", cylinders=100, heads=10, spt=10
++ata0-slave: type=disk, mode=flat, path="fs.img", cylinders=1024, heads=1, spt=1
++#ata0-slave: type=cdrom, path=D:, status=inserted
++#ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
++#ata0-slave: type=cdrom, path="drive", status=inserted
++#ata0-slave: type=cdrom, path=/dev/rcd0d, status=inserted 
++
++#=======================================================================
++# BOOT:
++# This defines the boot sequence. Now you can specify up to 3 boot drives.
++# You can either boot from 'floppy', 'disk' or 'cdrom'
++# legacy 'a' and 'c' are also supported
++# Examples:
++#   boot: floppy
++#   boot: disk
++#   boot: cdrom
++#   boot: c
++#   boot: a
++#   boot: cdrom, floppy, disk
++#=======================================================================
++#boot: floppy
++boot: disk
++
++#=======================================================================
++# CLOCK:
++# This defines the parameters of the clock inside Bochs:
++#
++#  SYNC:
++#  TO BE COMPLETED (see Greg explanation in feature request #536329)
++#
++#  TIME0:
++#  Specifies the start (boot) time of the virtual machine. Use a time 
++#  value as returned by the time(2) system call. If no time0 value is 
++#  set or if time0 equal to 1 (special case) or if time0 equal 'local', 
++#  the simulation will be started at the current local host time.
++#  If time0 equal to 2 (special case) or if time0 equal 'utc',
++#  the simulation will be started at the current utc time.
++#
++# Syntax:
++#  clock: sync=[none|slowdown|realtime|both], time0=[timeValue|local|utc]
++#
++# Example:
++#   clock: sync=none,     time0=local       # Now (localtime)
++#   clock: sync=slowdown, time0=315529200   # Tue Jan  1 00:00:00 1980
++#   clock: sync=none,     time0=631148400   # Mon Jan  1 00:00:00 1990
++#   clock: sync=realtime, time0=938581955   # Wed Sep 29 07:12:35 1999
++#   clock: sync=realtime, time0=946681200   # Sat Jan  1 00:00:00 2000
++#   clock: sync=none,     time0=1           # Now (localtime)
++#   clock: sync=none,     time0=utc         # Now (utc/gmt)
++# 
++# Default value are sync=none, time0=local
++#=======================================================================
++#clock: sync=none, time0=local
++
++
++#=======================================================================
++# FLOPPY_BOOTSIG_CHECK: disabled=[0|1]
++# Enables or disables the 0xaa55 signature check on boot floppies
++# Defaults to disabled=0
++# Examples:
++#   floppy_bootsig_check: disabled=0
++#   floppy_bootsig_check: disabled=1
++#=======================================================================
++#floppy_bootsig_check: disabled=1
++floppy_bootsig_check: disabled=0
++
++#=======================================================================
++# LOG:
++# Give the path of the log file you'd like Bochs debug and misc. verbiage
++# to be written to. If you don't use this option or set the filename to
++# '-' the output is written to the console. If you really don't want it,
++# make it "/dev/null" (Unix) or "nul" (win32). :^(
++#
++# Examples:
++#   log: ./bochs.out
++#   log: /dev/tty
++#=======================================================================
++#log: /dev/null
++log: bochsout.txt
++
++#=======================================================================
++# LOGPREFIX:
++# This handles the format of the string prepended to each log line.
++# You may use those special tokens :
++#   %t : 11 decimal digits timer tick
++#   %i : 8 hexadecimal digits of cpu current eip (ignored in SMP configuration)
++#   %e : 1 character event type ('i'nfo, 'd'ebug, 'p'anic, 'e'rror)
++#   %d : 5 characters string of the device, between brackets
++# 
++# Default : %t%e%d
++# Examples:
++#   logprefix: %t-%e-@%i-%d
++#   logprefix: %i%e%d
++#=======================================================================
++#logprefix: %t%e%d
++
++#=======================================================================
++# LOG CONTROLS
++#
++# Bochs now has four severity levels for event logging.
++#   panic: cannot proceed.  If you choose to continue after a panic, 
++#          don't be surprised if you get strange behavior or crashes.
++#   error: something went wrong, but it is probably safe to continue the
++#          simulation.
++#   info: interesting or useful messages.
++#   debug: messages useful only when debugging the code.  This may
++#          spit out thousands per second.
++#
++# For events of each level, you can choose to crash, report, or ignore.
++# TODO: allow choice based on the facility: e.g. crash on panics from
++#       everything except the cdrom, and only report those.
++#
++# If you are experiencing many panics, it can be helpful to change
++# the panic action to report instead of fatal.  However, be aware
++# that anything executed after a panic is uncharted territory and can 
++# cause bochs to become unstable.  The panic is a "graceful exit," so
++# if you disable it you may get a spectacular disaster instead.
++#=======================================================================
++panic: action=ask
++error: action=report
++info: action=report
++debug: action=ignore
++#pass: action=fatal
++
++#=======================================================================
++# DEBUGGER_LOG:
++# Give the path of the log file you'd like Bochs to log debugger output.
++# If you really don't want it, make it /dev/null or '-'. :^(
++#
++# Examples:
++#   debugger_log: ./debugger.out
++#=======================================================================
++#debugger_log: /dev/null
++#debugger_log: debugger.out
++debugger_log: -
++
++#=======================================================================
++# COM1, COM2, COM3, COM4:
++# This defines a serial port (UART type 16550A). In the 'term' you can specify
++# a device to use as com1. This can be a real serial line, or a pty.  To use
++# a pty (under X/Unix), create two windows (xterms, usually).  One of them will
++# run bochs, and the other will act as com1. Find out the tty the com1
++# window using the `tty' command, and use that as the `dev' parameter.
++# Then do `sleep 1000000' in the com1 window to keep the shell from
++# messing with things, and run bochs in the other window.  Serial I/O to
++# com1 (port 0x3f8) will all go to the other window.
++# Other serial modes are 'null' (no input/output), 'file' (output to a file
++# specified as the 'dev' parameter), 'raw' (use the real serial port - under
++# construction for win32), 'mouse' (standard serial mouse - requires
++# mouse option setting 'type=serial' or 'type=serial_wheel') and 'socket'
++# (connect a networking socket).
++#
++# Examples:
++#   com1: enabled=1, mode=null
++#   com1: enabled=1, mode=mouse
++#   com2: enabled=1, mode=file, dev=serial.out
++#   com3: enabled=1, mode=raw, dev=com1
++#   com3: enabled=1, mode=socket, dev=localhost:8888
++#=======================================================================
++#com1: enabled=1, mode=term, dev=/dev/ttyp9
++
++
++#=======================================================================
++# PARPORT1, PARPORT2:
++# This defines a parallel (printer) port. When turned on and an output file is
++# defined the emulated printer port sends characters printed by the guest OS
++# into the output file. On some platforms a device filename can be used to
++# send the data to the real parallel port (e.g. "/dev/lp0" on Linux, "lpt1" on
++# win32 platforms).
++#
++# Examples:
++#   parport1: enabled=1, file="parport.out"
++#   parport2: enabled=1, file="/dev/lp0"
++#   parport1: enabled=0
++#=======================================================================
++parport1: enabled=1, file="/dev/stdout"
++
++#=======================================================================
++# SB16:
++# This defines the SB16 sound emulation. It can have several of the
++# following properties.
++# All properties are in the format sb16: property=value
++# midi: The filename is where the midi data is sent. This can be a
++#       device or just a file if you want to record the midi data.
++# midimode:
++#      0=no data
++#      1=output to device (system dependent. midi denotes the device driver)
++#      2=SMF file output, including headers
++#      3=output the midi data stream to the file (no midi headers and no
++#        delta times, just command and data bytes)
++# wave: This is the device/file where wave output is stored
++# wavemode:
++#      0=no data
++#      1=output to device (system dependent. wave denotes the device driver)
++#      2=VOC file output, incl. headers
++#      3=output the raw wave stream to the file
++# log:  The file to write the sb16 emulator messages to.
++# loglevel:
++#      0=no log
++#      1=resource changes, midi program and bank changes
++#      2=severe errors
++#      3=all errors
++#      4=all errors plus all port accesses
++#      5=all errors and port accesses plus a lot of extra info
++# dmatimer:
++#      microseconds per second for a DMA cycle.  Make it smaller to fix
++#      non-continuous sound.  750000 is usually a good value.  This needs a
++#      reasonably correct setting for the IPS parameter of the CPU option.
++#
++# For an example look at the next line:
++#=======================================================================
++
++#sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, dmatimer=600000
++
++#=======================================================================
++# VGA_UPDATE_INTERVAL:
++# Video memory is scanned for updates and screen updated every so many
++# virtual seconds.  The default is 40000, about 25Hz. Keep in mind that
++# you must tweak the 'cpu: ips=N' directive to be as close to the number
++# of emulated instructions-per-second your workstation can do, for this
++# to be accurate.
++#
++# Examples:
++#   vga_update_interval: 250000
++#=======================================================================
++vga_update_interval: 300000
++
++# using for Winstone '98 tests
++#vga_update_interval:  100000
++
++#=======================================================================
++# KEYBOARD_SERIAL_DELAY:
++# Approximate time in microseconds that it takes one character to
++# be transfered from the keyboard to controller over the serial path.
++# Examples:
++#   keyboard_serial_delay: 200
++#=======================================================================
++keyboard_serial_delay: 250
++
++#=======================================================================
++# KEYBOARD_PASTE_DELAY:
++# Approximate time in microseconds between attempts to paste
++# characters to the keyboard controller. This leaves time for the
++# guest os to deal with the flow of characters.  The ideal setting
++# depends on how your operating system processes characters.  The
++# default of 100000 usec (.1 seconds) was chosen because it works 
++# consistently in Windows.
++#
++# If your OS is losing characters during a paste, increase the paste
++# delay until it stops losing characters.
++#
++# Examples:
++#   keyboard_paste_delay: 100000
++#=======================================================================
++keyboard_paste_delay: 100000
++
++#=======================================================================
++# MOUSE: 
++# This option prevents Bochs from creating mouse "events" unless a mouse
++# is  enabled. The hardware emulation itself is not disabled by this.
++# You can turn the mouse on by setting enabled to 1, or turn it off by
++# setting enabled to 0. Unless you have a particular reason for enabling
++# the mouse by default, it is recommended that you leave it off.
++# You can also toggle the mouse usage at runtime (control key + middle
++# mouse button on X11, SDL, wxWidgets and Win32).
++# With the mouse type option you can select the type of mouse to emulate.
++# The default value is 'ps2'. The other choices are 'imps2' (wheel mouse
++# on PS/2), 'serial', 'serial_wheel' (one com port requires setting
++# 'mode=mouse') and 'usb' (3-button mouse - one of the USB ports must be
++# connected with the 'mouse' device - requires PCI and USB support).
++#
++# Examples:
++#   mouse: enabled=1
++#   mouse: enabled=1, type=imps2
++#   mouse: enabled=1, type=serial
++#   mouse: enabled=0
++#=======================================================================
++mouse: enabled=0
++
++#=======================================================================
++# private_colormap: Request that the GUI create and use it's own
++#                   non-shared colormap.  This colormap will be used
++#                   when in the bochs window.  If not enabled, a
++#                   shared colormap scheme may be used.  Not implemented
++#                   on all GUI's.
++#
++# Examples:
++#   private_colormap: enabled=1
++#   private_colormap: enabled=0
++#=======================================================================
++private_colormap: enabled=0
++
++#=======================================================================
++# fullscreen: ONLY IMPLEMENTED ON AMIGA
++#             Request that Bochs occupy the entire screen instead of a 
++#             window.
++#
++# Examples:
++#   fullscreen: enabled=0
++#   fullscreen: enabled=1
++#=======================================================================
++#fullscreen: enabled=0
++#screenmode: name="sample"
++
++#=======================================================================
++# ne2k: NE2000 compatible ethernet adapter
++#
++# Examples:
++# ne2k: ioaddr=IOADDR, irq=IRQ, mac=MACADDR, ethmod=MODULE, ethdev=DEVICE, script=SCRIPT
++#
++# ioaddr, irq: You probably won't need to change ioaddr and irq, unless there
++# are IRQ conflicts.
++#
++# mac: The MAC address MUST NOT match the address of any machine on the net.
++# Also, the first byte must be an even number (bit 0 set means a multicast
++# address), and you cannot use ff:ff:ff:ff:ff:ff because that's the broadcast
++# address.  For the ethertap module, you must use fe:fd:00:00:00:01.  There may
++# be other restrictions too.  To be safe, just use the b0:c4... address.
++#
++# ethdev: The ethdev value is the name of the network interface on your host
++# platform.  On UNIX machines, you can get the name by running ifconfig.  On
++# Windows machines, you must run niclist to get the name of the ethdev.
++# Niclist source code is in misc/niclist.c and it is included in Windows 
++# binary releases.
++#
++# script: The script value is optional, and is the name of a script that 
++# is executed after bochs initialize the network interface. You can use 
++# this script to configure this network interface, or enable masquerading.
++# This is mainly useful for the tun/tap devices that only exist during
++# Bochs execution. The network interface name is supplied to the script
++# as first parameter
++#
++# If you don't want to make connections to any physical networks,
++# you can use the following 'ethmod's to simulate a virtual network.
++#   null: All packets are discarded, but logged to a few files.
++#   arpback: ARP is simulated. Disabled by default.
++#   vde:  Virtual Distributed Ethernet
++#   vnet: ARP, ICMP-echo(ping), DHCP and read/write TFTP are simulated.
++#         The virtual host uses 192.168.10.1.
++#         DHCP assigns 192.168.10.2 to the guest.
++#         TFTP uses the ethdev value for the root directory and doesn't
++#         overwrite files.
++#
++#=======================================================================
++# ne2k: ioaddr=0x240, irq=9, mac=fe:fd:00:00:00:01, ethmod=fbsd, ethdev=en0 #macosx
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=xl0
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:00, ethmod=linux, ethdev=eth0
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:01, ethmod=win32, ethdev=MYCARD
++# ne2k: ioaddr=0x240, irq=9, mac=fe:fd:00:00:00:01, ethmod=tap, ethdev=tap0
++# ne2k: ioaddr=0x240, irq=9, mac=fe:fd:00:00:00:01, ethmod=tuntap, ethdev=/dev/net/tun0, script=./tunconfig
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:01, ethmod=null, ethdev=eth0
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:01, ethmod=vde, ethdev="/tmp/vde.ctl"
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:01, ethmod=vnet, ethdev="c:/temp"
++
++#=======================================================================
++# KEYBOARD_MAPPING:
++# This enables a remap of a physical localized keyboard to a 
++# virtualized us keyboard, as the PC architecture expects.
++# If enabled, the keymap file must be specified.
++# 
++# Examples:
++#   keyboard_mapping: enabled=1, map=gui/keymaps/x11-pc-de.map
++#=======================================================================
++keyboard_mapping: enabled=0, map=
++
++#=======================================================================
++# KEYBOARD_TYPE:
++# Type of keyboard return by a "identify keyboard" command to the
++# keyboard controler. It must be one of "xt", "at" or "mf".
++# Defaults to "mf". It should be ok for almost everybody. A known
++# exception is french macs, that do have a "at"-like keyboard.
++#
++# Examples:
++#   keyboard_type: mf
++#=======================================================================
++#keyboard_type: mf
++
++#=======================================================================
++# USER_SHORTCUT:
++# This defines the keyboard shortcut to be sent when you press the "user"
++# button in the headerbar. The shortcut string is a combination of maximum
++# 3 key names (listed below) separated with a '-' character. The old-style
++# syntax (without the '-') still works for the key combinations supported
++# in Bochs 2.2.1.
++# Valid key names:
++# "alt", "bksl", "bksp", "ctrl", "del", "down", "end", "enter", "esc",
++# "f1", ... "f12", "home", "ins", "left", "menu", "minus", "pgdwn", "pgup",
++# "plus", "right", "shift", "space", "tab", "up", and "win".
++#
++# Example:
++#   user_shortcut: keys=ctrl-alt-del
++#=======================================================================
++#user_shortcut: keys=ctrl-alt-del
++
++#=======================================================================
++# I440FXSUPPORT:
++# This option controls the presence of the i440FX PCI chipset. You can
++# also specify the devices connected to PCI slots. Up to 5 slots are
++# available now. These devices are currently supported: ne2k, pcivga,
++# pcidev and pcipnic. If Bochs is compiled with Cirrus SVGA support
++# you'll have the additional choice 'cirrus'.
++#
++# Example:
++#   i440fxsupport: enabled=1, slot1=pcivga, slot2=ne2k
++#=======================================================================
++#i440fxsupport: enabled=1
++
++#=======================================================================
++# USB1:
++# This option controls the presence of the USB root hub which is a part
++# of the i440FX PCI chipset. With the portX option you can connect devices
++# to the hub (currently supported: 'mouse' and 'keypad'). If you connect
++# the mouse to one of the ports and use the mouse option 'type=usb' you'll
++# have a 3-button USB mouse.
++#
++# Example:
++#   usb1: enabled=1, port1=mouse, port2=keypad
++#=======================================================================
++#usb1: enabled=1
++
++#=======================================================================
++# CMOSIMAGE:
++# This defines image file that can be loaded into the CMOS RAM at startup.
++# The rtc_init parameter controls whether initialize the RTC with values stored
++# in the image. By default the time0 argument given to the clock option is used.
++# With 'rtc_init=image' the image is the source for the initial time.
++#
++# Example:
++#   cmosimage: file=cmos.img, rtc_init=image
++#=======================================================================
++#cmosimage: file=cmos.img, rtc_init=time0
++
++#=======================================================================
++# other stuff
++#=======================================================================
++#magic_break: enabled=1
++#load32bitOSImage: os=nullkernel, path=../kernel.img, iolog=../vga_io.log
++#load32bitOSImage: os=linux, path=../linux.img, iolog=../vga_io.log, initrd=../initrd.img
++#text_snapshot_check: enable
++
++#-------------------------
++# PCI host device mapping
++#-------------------------
++#pcidev: vendor=0x1234, device=0x5678
++
++#=======================================================================
++# GDBSTUB:
++# Enable GDB stub. See user documentation for details.
++# Default value is enabled=0.
++#=======================================================================
++#gdbstub: enabled=0, port=1234, text_base=0, data_base=0, bss_base=0
++
++#=======================================================================
++# IPS:
++# The IPS directive is DEPRECATED. Use the parameter IPS of the CPU
++# directive instead.
++#=======================================================================
++#ips: 10000000
++
++#=======================================================================
++# for Macintosh, use the style of pathnames in the following
++# examples.
++#
++# vgaromimage: :bios:VGABIOS-elpin-2.40
++# romimage: file=:bios:BIOS-bochs-latest, address=0xf0000
++# floppya: 1_44=[fd:], status=inserted
++#=======================================================================
+diff -rupN xv6-unrc/defs.h xv6-mod/defs.h
+--- xv6-unrc/defs.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/defs.h	2018-05-09 18:56:21.234686633 -0300
+@@ -118,6 +118,7 @@ void            userinit(void);
+ int             wait(void);
+ void            wakeup(void*);
+ void            yield(void);
++void            aging(void);
+ 
+ // swtch.S
+ void            swtch(struct context**, struct context*);
+@@ -179,5 +180,16 @@ void            switchkvm(void);
+ int             copyout(pde_t*, uint, void*, uint);
+ void            clearpteu(pde_t *pgdir, char *uva);
+ 
++
++//semaphore.c
++void            semtableinit(void);
++int             semget(int , int);
++int             semfree(int);
++int             semdown(int);
++int             semup(int );
++struct semaphore*    semaphoredup(struct semaphore*);
++
++
++
+ // number of elements in fixed-size array
+ #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+diff -rupN xv6-unrc/main.c xv6-mod/main.c
+--- xv6-unrc/main.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/main.c	2018-05-09 18:56:50.007023580 -0300
+@@ -31,6 +31,7 @@ main(void)
+   tvinit();        // trap vectors
+   binit();         // buffer cache
+   fileinit();      // file table
++  semtableinit();  // semaphore table
+   iinit();         // inode cache
+   ideinit();       // disk
+   if(!ismp)
+@@ -46,7 +47,7 @@ main(void)
+ static void
+ mpenter(void)
+ {
+-  switchkvm(); 
++  switchkvm();
+   seginit();
+   lapicinit();
+   mpmain();
+@@ -83,7 +84,7 @@ startothers(void)
+     if(c == cpus+cpunum())  // We've started already.
+       continue;
+ 
+-    // Tell entryother.S what stack to use, where to enter, and what 
++    // Tell entryother.S what stack to use, where to enter, and what
+     // pgdir to use. We cannot use kpgdir yet, because the AP processor
+     // is running in low  memory, so we use entrypgdir for the APs too.
+     stack = kalloc();
+@@ -101,7 +102,7 @@ startothers(void)
+ 
+ // Boot page table used in entry.S and entryother.S.
+ // Page directories (and page tables), must start on a page boundary,
+-// hence the "__aligned__" attribute.  
++// hence the "__aligned__" attribute.
+ // Use PTE_PS in page directory entry to enable 4Mbyte pages.
+ __attribute__((__aligned__(PGSIZE)))
+ pde_t entrypgdir[NPDENTRIES] = {
+diff -rupN xv6-unrc/Makefile xv6-mod/Makefile
+--- xv6-unrc/Makefile	2015-04-08 16:00:19.000000000 -0300
++++ xv6-mod/Makefile	2018-05-09 19:18:53.319726999 -0300
+@@ -15,12 +15,14 @@ OBJS = \
+ 	picirq.o\
+ 	pipe.o\
+ 	proc.o\
++	semaphore.o\
+ 	spinlock.o\
+ 	string.o\
+ 	swtch.o\
+ 	syscall.o\
+ 	sysfile.o\
+ 	sysproc.o\
++	syssem.o\
+ 	timer.o\
+ 	trapasm.o\
+ 	trap.o\
+@@ -32,7 +34,7 @@ OBJS = \
+ # TOOLPREFIX = i386-jos-elf
+ 
+ # Using native tools (e.g., on X86 Linux)
+-#TOOLPREFIX = 
++#TOOLPREFIX =
+ 
+ # Try to infer the correct TOOLPREFIX if not set
+ ifndef TOOLPREFIX
+@@ -147,6 +149,18 @@ _forktest: user/forktest.o $(ULIB)
+ 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest user/forktest.o user/ulib.o user/usys.o
+ 	$(OBJDUMP) -S _forktest > forktest.asm
+ 
++_prioritytest: user/prioritytest.o $(ULIB)
++	# forktest has less library code linked in - needs to be small
++	# in order to be able to max out the proc table.
++	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _prioritytest user/prioritytest.o user/ulib.o user/usys.o
++	$(OBJDUMP) -S _prioritytest > prioritytest.asm
++
++_semaphoretest: user/semaphoretest.o $(ULIB)
++	# forktest has less library code linked in - needs to be small
++	# in order to be able to max out the proc table.
++	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _semaphoretest user/semaphoretest.o user/ulib.o user/usys.o
++	$(OBJDUMP) -S _semaphoretest > semaphoretest.asm
++
+ mkfs: mkfs.c fs.h
+ 	gcc -Werror -Wall -o mkfs mkfs.c
+ 
+@@ -160,6 +174,8 @@ UPROGS=\
+ 	_cat\
+ 	_echo\
+ 	_forktest\
++	_prioritytest\
++	_semaphoretest\
+ 	_grep\
+ 	_init\
+ 	_kill\
+@@ -178,7 +194,7 @@ fs.img: mkfs README $(UPROGS)
+ 
+ -include *.d
+ 
+-clean: 
++clean:
+ 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
+ 	*.o user/*.o *.d user/*.d *.asm *.sym vectors.S bootblock entryother \
+ 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \
+@@ -239,7 +255,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
+ # check in that version.
+ 
+ EXTRA=\
+-	mkfs.c user/ulib.c user/user.h user/cat.c user/echo.c user/forktest.c user/grep.c user/kill.c\
++	mkfs.c user/ulib.c user/user.h user/cat.c user/echo.c user/forktest.c user/prioritytest.c user/semaphoretest.c user/grep.c user/kill.c\
+ 	user/ln.c user/ls.c user/mkdir.c user/rm.c user/stressfs.c user/usertests.c user/wc.c user/zombie.c\
+ 	user/printf.c user/umalloc.c\
+ 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
+diff -rupN xv6-unrc/mkfs.c xv6-mod/mkfs.c
+--- xv6-unrc/mkfs.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/mkfs.c	2018-04-18 17:43:18.397432075 -0300
+@@ -11,7 +11,7 @@
+ #include "stat.h"
+ #include "param.h"
+ 
+-#define static_assert(a, b) do { switch (0) case 0: case (a): ; } while (0)
++//#define static_assert(a, b) do { switch (0) case 0: case (a): ; } while (0)
+ 
+ int nblocks = (995-LOGSIZE);
+ int nlog = LOGSIZE;
+diff -rupN xv6-unrc/param.h xv6-mod/param.h
+--- xv6-unrc/param.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/param.h	2018-05-09 22:15:09.737310406 -0300
+@@ -10,4 +10,11 @@
+ #define MAXOPBLOCKS  10  // max # of blocks any FS op writes
+ #define LOGSIZE      (MAXOPBLOCKS*3)  // max data sectors in on-disk log
+ #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
+-
++#define TIMESLICE    40  //amount of ticks per burst of execution
++#define MLFLEVELS    4   // amount of levels in the MLF structure
++#define MLFMAXLEVEL  0   // level of maximum priority in the mlf
++#define AGEFORSCALING  50  // age needed to climb the mlf levels
++#define TICKSFORAGING 100  //
++#define ACTIVATEAGING  1 // 1 for activate the priority increase by aging, 0 for disable
++#define MAXSEM  30  //
++#define MAXPROCSEM 5
+diff -rupN xv6-unrc/proc.c xv6-mod/proc.c
+--- xv6-unrc/proc.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/proc.c	2018-05-09 18:27:38.798285575 -0300
+@@ -10,8 +10,12 @@
+ struct {
+   struct spinlock lock;
+   struct proc proc[NPROC];
++  struct proc* mlf[MLFLEVELS];
+ } ptable;
+ 
++
++
++
+ static struct proc *initproc;
+ 
+ int nextpid = 1;
+@@ -55,11 +59,11 @@ found:
+     return 0;
+   }
+   sp = p->kstack + KSTACKSIZE;
+-  
++
+   // Leave room for trap frame.
+   sp -= sizeof *p->tf;
+   p->tf = (struct trapframe*)sp;
+-  
++
+   // Set up new context to start executing at forkret,
+   // which returns to trapret.
+   sp -= 4;
+@@ -70,17 +74,56 @@ found:
+   memset(p->context, 0, sizeof *p->context);
+   p->context->eip = (uint)forkret;
+ 
++  //set priority 0 by default
++  p->priority = 0;
++
+   return p;
+ }
+ 
+ //PAGEBREAK: 32
++
++void
++makerunnable (struct proc* p)
++{
++  int priority;
++  struct proc* lastOfLevel ;
++  p->state = RUNNABLE;
++  p->next=0;
++  p->age=0;
++  priority=p->priority;
++  lastOfLevel = ptable.mlf[priority];
++
++  if(lastOfLevel ==0){   //If the level does not have processes, it saves the process as the first
++    ptable.mlf[priority]=p;
++  }else{
++    while(lastOfLevel->next != 0){ // if not, I take the first and advance until I reach the last
++      lastOfLevel=lastOfLevel->next;
++    }
++    lastOfLevel->next=p;  //and I keep it as the last
++  }
++}
++
++struct proc*
++unqueue(int level)
++{
++  struct proc* res;
++  res=0;
++  if(ptable.mlf[level]!=0){
++    res =ptable.mlf[level];
++    ptable.mlf[level]=ptable.mlf[level]->next;
++    res->next=0;
++  }
++  return res;
++}
++
++
+ // Set up first user process.
+ void
+ userinit(void)
+ {
+   struct proc *p;
+   extern char _binary_initcode_start[], _binary_initcode_size[];
+-  
++
+   p = allocproc();
+   initproc = p;
+   if((p->pgdir = setupkvm()) == 0)
+@@ -99,7 +142,9 @@ userinit(void)
+   safestrcpy(p->name, "initcode", sizeof(p->name));
+   p->cwd = namei("/");
+ 
+-  p->state = RUNNABLE;
++  //cprintf(" antes make runabbele de userinit \n");
++  makerunnable(p);
++  //cprintf("despues make runabbele de userinit \n");
+ }
+ 
+ // Grow current process's memory by n bytes.
+@@ -108,7 +153,7 @@ int
+ growproc(int n)
+ {
+   uint sz;
+-  
++
+   sz = proc->sz;
+   if(n > 0){
+     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
+@@ -152,17 +197,23 @@ fork(void)
+   for(i = 0; i < NOFILE; i++)
+     if(proc->ofile[i])
+       np->ofile[i] = filedup(proc->ofile[i]);
++
++//duplicates the semaphore array
++  for(i = 0; i < MAXPROCSEM; i++)
++    if(proc->osemaphore[i])
++      np->osemaphore[i] = semaphoredup(proc->osemaphore[i]);
++
+   np->cwd = idup(proc->cwd);
+ 
+   safestrcpy(np->name, proc->name, sizeof(proc->name));
+- 
++
+   pid = np->pid;
+ 
+   // lock to force the compiler to emit the np->state write last.
+   acquire(&ptable.lock);
+-  np->state = RUNNABLE;
++  makerunnable(np);
+   release(&ptable.lock);
+-  
++
+   return pid;
+ }
+ 
+@@ -266,29 +317,36 @@ void
+ scheduler(void)
+ {
+   struct proc *p;
+-
++  int level;
+   for(;;){
+     // Enable interrupts on this processor.
+     sti();
+ 
+     // Loop over process table looking for process to run.
+     acquire(&ptable.lock);
+-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+-      if(p->state != RUNNABLE)
+-        continue;
+ 
+-      // Switch to chosen process.  It is the process's job
+-      // to release ptable.lock and then reacquire it
+-      // before jumping back to us.
+-      proc = p;
+-      switchuvm(p);
+-      p->state = RUNNING;
+-      swtch(&cpu->scheduler, proc->context);
+-      switchkvm();
+-
+-      // Process is done running for now.
+-      // It should have changed its p->state before coming back.
+-      proc = 0;
++    for(level = MLFMAXLEVEL; level < MLFLEVELS; level++){
++
++      if(ptable.mlf[level] != 0){
++        p = ptable.mlf[level];
++        // Switch to chosen process.  It is the process's job
++        // to release ptable.lock and then reacquire it
++        // before jumping back to us.
++        proc = p;
++        switchuvm(p);
++        p->state = RUNNING;                       //puts in "RUNNING" the chosen process
++        p->timesscheduled++;
++        unqueue(level);
++
++
++        swtch(&cpu->scheduler, proc->context);
++        switchkvm();
++
++        // Process is done running for now.
++        // It should have changed its p->state before coming back.
++        proc = 0;
++        break;
++      }
+     }
+     release(&ptable.lock);
+ 
+@@ -320,7 +378,10 @@ void
+ yield(void)
+ {
+   acquire(&ptable.lock);  //DOC: yieldlock
+-  proc->state = RUNNABLE;
++  if(proc->priority < (MLFLEVELS-1)){
++    proc->priority=(proc->priority)+1;
++  }
++  makerunnable(proc);
+   sched();
+   release(&ptable.lock);
+ }
+@@ -336,12 +397,12 @@ forkret(void)
+ 
+   if (first) {
+     // Some initialization functions must be run in the context
+-    // of a regular process (e.g., they call sleep), and thus cannot 
++    // of a regular process (e.g., they call sleep), and thus cannot
+     // be run from main().
+     first = 0;
+     initlog();
+   }
+-  
++
+   // Return to "caller", actually trapret (see allocproc).
+ }
+ 
+@@ -391,8 +452,13 @@ wakeup1(void *chan)
+   struct proc *p;
+ 
+   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+-    if(p->state == SLEEPING && p->chan == chan)
+-      p->state = RUNNABLE;
++    if(p->state == SLEEPING && p->chan == chan){
++      if(p->priority>MLFMAXLEVEL){
++        p->priority--;
++      }
++      makerunnable(p);
++    }
++
+ }
+ 
+ // Wake up all processes sleeping on chan.
+@@ -418,7 +484,7 @@ kill(int pid)
+       p->killed = 1;
+       // Wake process from sleep if necessary.
+       if(p->state == SLEEPING)
+-        p->state = RUNNABLE;
++        makerunnable(p);
+       release(&ptable.lock);
+       return 0;
+     }
+@@ -446,7 +512,7 @@ procdump(void)
+   struct proc *p;
+   char *state;
+   uint pc[10];
+-  
++
+   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+     if(p->state == UNUSED)
+       continue;
+@@ -460,6 +526,50 @@ procdump(void)
+       for(i=0; i<10 && pc[i] != 0; i++)
+         cprintf(" %p", pc[i]);
+     }
++    cprintf(" prioridad: %d",p->priority); //shows the priority of the process
++    cprintf(" edad: %d",p->age); //shows the priority of the process
++    cprintf(" sch: %d",p->timesscheduled);
+     cprintf("\n");
+   }
+ }
++
++
++
++void
++raisepriority(int level )         //unqueue, modify the priority and enqueue
++{
++    struct proc* oldprocess;
++    oldprocess = unqueue(level);
++    if(oldprocess){
++      oldprocess->priority = level-1;
++      makerunnable(oldprocess);
++    }
++}
++
++
++void
++aging()
++{
++  struct proc *p;
++  int level;
++  acquire(&ptable.lock);
++  for (level=MLFMAXLEVEL; level < MLFLEVELS; level++) { // i go through the levels of the mlf
++    p =ptable.mlf[level];
++    while(p){
++      p->age++;                             // increase the age
++      if( (p->age == AGEFORSCALING && level != MLFMAXLEVEL)){ // check if the process deserves a priority increase
++        procdump();                         //prints the processes BEFORE the priority increase
++        if(ACTIVATEAGING){                 //ACTIVATEAGING value is in param.h !
++          raisepriority(level);
++          cprintf("---------------------------------\n");
++          procdump();                     //prints the processes AFTER the priority increase
++        }
++        cprintf("//////////////////////////////////////\n");
++        p=ptable.mlf[level];              // now will continue with the new first level process
++      }else{
++        p=p->next;                        //from here only increases the age, because they will be younger
++      }
++    }
++  }
++  release(&ptable.lock);
++}
+diff -rupN xv6-unrc/proc.h xv6-mod/proc.h
+--- xv6-unrc/proc.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/proc.h	2018-05-09 14:19:46.407912394 -0300
+@@ -10,7 +10,7 @@ struct cpu {
+   volatile uint started;       // Has the CPU started?
+   int ncli;                    // Depth of pushcli nesting.
+   int intena;                  // Were interrupts enabled before pushcli?
+-  
++
+   // Cpu-local storage variables; see below
+   struct cpu *cpu;
+   struct proc *proc;           // The currently-running process.
+@@ -66,6 +66,12 @@ struct proc {
+   struct file *ofile[NOFILE];  // Open files
+   struct inode *cwd;           // Current directory
+   char name[16];               // Process name (debugging)
++  ushort ticks;                // Ticks that have been executed during the execution burst
++  struct proc* next;
++  ushort priority;
++  ushort age;
++  ushort timesscheduled;
++  struct semaphore *osemaphore[MAXPROCSEM];
+ };
+ 
+ // Process memory is laid out contiguously, low addresses first:
+diff -rupN xv6-unrc/semaphore.c xv6-mod/semaphore.c
+--- xv6-unrc/semaphore.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/semaphore.c	2018-05-10 20:29:48.748212201 -0300
+@@ -0,0 +1,209 @@
++#include "types.h"
++#include "defs.h"
++#include "param.h"
++#include "memlayout.h"
++#include "mmu.h"
++#include "x86.h"
++#include "spinlock.h"
++#include "semaphore.h"
++#include "proc.h"
++
++struct {
++  struct spinlock lock;
++  struct semaphore sem[MAXSEM];
++} semtable;
++
++
++void
++semtableinit(void)
++{
++  initlock(&semtable.lock, "semtable");
++}
++
++int semsearch(int semid);
++int semObtained(int semid);
++void printsemaphores();
++
++int
++semget(int semid,int initvalue)
++{
++  int i;
++  struct semaphore* s;
++  int res;
++  int indexofsem;
++  acquire(&semtable.lock);
++
++  indexofsem=semsearch(semid);
++  if(indexofsem==-3){
++    res=-3;
++    goto errsemget;
++  }
++  s = &semtable.sem[indexofsem];
++  if(semid>=0 && s->counter==0){
++    res= -1;    //el semaforo no esta en uso
++    goto errsemget;
++  }
++
++
++
++  if(semid == -1){
++        s->id=s-semtable.sem;
++        s->counter++;
++        s->value = initvalue;
++        res=s->id;
++  }else{
++    s->counter++;
++    res=semid;
++
++  }
++
++  for(i=0;i<MAXPROCSEM;i++){
++    if(proc->osemaphore[i]==0){
++      proc->osemaphore[i]=s;
++      break;
++    }
++  }
++
++
++  if(i==MAXPROCSEM){
++    res= -2;
++  }
++errsemget:
++  release(&semtable.lock);
++  return res;
++}
++
++int
++semfree(int semid)
++{
++
++  struct semaphore * s;
++  int indexofsem;
++  acquire(&semtable.lock);
++  indexofsem = semObtained(semid);
++  if(indexofsem==-1){
++    release(&semtable.lock);
++    return -1;
++  }
++  s=proc->osemaphore[indexofsem];
++  s->counter--;
++  release(&semtable.lock);
++  proc->osemaphore[indexofsem]=0;
++
++
++  return 0;
++}
++
++int
++semdown(int semid)
++{
++  struct semaphore * s;
++  int indexofsem;
++  int res;
++  acquire(&semtable.lock);
++  indexofsem=semObtained(semid);
++  if(indexofsem==-1){
++    res= -1;
++
++  }else{
++    s=proc->osemaphore[indexofsem];
++    while (s->value==0){
++      cprintf("quiero bajar el sem %d y no puedo! me voy a dormir!\n",s->id);
++      sleep(s,&semtable.lock);
++    }
++    cprintf("pude bajar el sem %d\n",s->id);
++    s->value--;
++    res= 0;
++  }
++  cprintf("semdown del semaforo! %d\n",s->value);
++  release(&semtable.lock);
++  return res;
++}
++
++int
++semup(int semid)
++{
++  struct semaphore * s;
++  int indexofsem;
++  int res;
++  acquire(&semtable.lock);
++  indexofsem=semObtained(semid);
++  if(indexofsem!=-1){
++    s=proc->osemaphore[indexofsem];
++    s->value++;
++    wakeup(s);
++    res =0;
++  }else{
++    res= -1;
++  }
++  //printsemaphores();
++  release(&semtable.lock);
++  return res;
++}
++
++
++
++//returns of the semaphore in the table.
++// If the id is -1, then it returns a pointer to the first unused semaphoro (counter 0)
++//return -2 if there are no more semaphore available
++int
++semsearch(int semid){
++
++  int i;
++  for(i=0; i < MAXSEM; i++){
++    if(semtable.sem[i].id==semid){
++      return i;
++    }
++    if(semid==-1 && semtable.sem[i].counter==0){
++      return i;
++    }
++  }
++  if(semid<0){
++    return -3;  //not avaible semaphores
++  }
++  return -1;
++}
++
++//Check if the semaphore belongs to the current process
++//returns the position in the semaphore arrangement of the process or -1 if it was not found
++int
++semObtained(int semid){
++  int i;
++  for(i=0;i<MAXPROCSEM;i++){
++    if(proc->osemaphore[i]!=0&&proc->osemaphore[i]->id==semid){
++      return i;
++    }
++  }
++
++
++    return -1;
++
++}
++
++struct semaphore*
++semaphoredup(struct semaphore* s){
++  acquire(&semtable.lock);
++  if(s->counter<0){
++    panic("error al duplicar el semaforo");
++  }
++  s->counter++;
++  release(&semtable.lock);
++  return s;
++}
++
++
++void
++printsemaphores()
++{
++  cprintf("SEMAFOROS DEL PROCESO!!!\n");
++  int i;
++  for(i=0;i<MAXPROCSEM;i++){
++    if(proc->osemaphore[i]!=0){
++      cprintf("semaforo id=%d value=%d\n",proc->osemaphore[i]->id,proc->osemaphore[i]->value);
++    }
++  }
++
++
++
++
++}
+diff -rupN xv6-unrc/semaphore.h xv6-mod/semaphore.h
+--- xv6-unrc/semaphore.h	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/semaphore.h	2018-05-03 12:25:22.618012729 -0300
+@@ -0,0 +1,6 @@
++
++struct semaphore {
++  int id;                     // Semaphore ID
++  int counter;                   // Counter of refences
++  int value;                     // Vale of the semaphore
++};
+diff -rupN xv6-unrc/syscall.c xv6-mod/syscall.c
+--- xv6-unrc/syscall.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/syscall.c	2018-05-08 23:04:32.103383396 -0300
+@@ -55,7 +55,7 @@ int
+ argptr(int n, char **pp, int size)
+ {
+   int i;
+-  
++
+   if(argint(n, &i) < 0)
+     return -1;
+   if((uint)i >= proc->sz || (uint)i+size > proc->sz)
+@@ -98,6 +98,12 @@ extern int sys_unlink(void);
+ extern int sys_wait(void);
+ extern int sys_write(void);
+ extern int sys_uptime(void);
++extern int sys_procstat(void);
++extern int sys_setpriority(void);
++extern int sys_semget(void);
++extern int sys_semfree(void);
++extern int sys_semup(void);
++extern int sys_semdown(void);
+ 
+ static int (*syscalls[])(void) = {
+ [SYS_fork]    sys_fork,
+@@ -121,6 +127,12 @@ static int (*syscalls[])(void) = {
+ [SYS_link]    sys_link,
+ [SYS_mkdir]   sys_mkdir,
+ [SYS_close]   sys_close,
++[SYS_procstat] sys_procstat,
++[SYS_setpriority] sys_setpriority,
++[SYS_semget] sys_semget,
++[SYS_semfree] sys_semfree,
++[SYS_semdown] sys_semdown,
++[SYS_semup] sys_semup,
+ };
+ 
+ void
+diff -rupN xv6-unrc/syscall.h xv6-mod/syscall.h
+--- xv6-unrc/syscall.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/syscall.h	2018-05-09 15:06:47.696653649 -0300
+@@ -20,3 +20,9 @@
+ #define SYS_link   19
+ #define SYS_mkdir  20
+ #define SYS_close  21
++#define SYS_procstat  22
++#define SYS_setpriority  23
++#define SYS_semget  24
++#define SYS_semfree  25
++#define SYS_semdown  26
++#define SYS_semup  27
+diff -rupN xv6-unrc/sysproc.c xv6-mod/sysproc.c
+--- xv6-unrc/sysproc.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/sysproc.c	2018-05-09 15:56:15.168127648 -0300
+@@ -7,6 +7,7 @@
+ #include "mmu.h"
+ #include "proc.h"
+ 
++
+ int
+ sys_fork(void)
+ {
+@@ -61,7 +62,7 @@ sys_sleep(void)
+ {
+   int n;
+   uint ticks0;
+-  
++
+   if(argint(0, &n) < 0)
+     return -1;
+   acquire(&tickslock);
+@@ -83,9 +84,37 @@ int
+ sys_uptime(void)
+ {
+   uint xticks;
+-  
++
+   acquire(&tickslock);
+   xticks = ticks;
+   release(&tickslock);
+   return xticks;
+ }
++
++//
++int
++sys_procstat(void)
++{
++  //cprintf("SE EJECUTA EL SYS_PROCSTAT\n");
++  procdump();// ejecutamos la funcion procdump definida en proc.c
++  return 0;
++}
++
++// change the priority of the process to the specified value
++//
++int
++sys_setpriority(void)
++{
++    int priority;
++    if(argint(0, &priority) < 0){
++      return -1;
++    }
++    if(priority>=0 &&priority<MLFLEVELS){
++      proc->priority=priority;
++      return 0;
++    }
++    else{
++      return -1;
++    }
++
++}
+diff -rupN xv6-unrc/syssem.c xv6-mod/syssem.c
+--- xv6-unrc/syssem.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/syssem.c	2018-05-09 15:24:50.344892706 -0300
+@@ -0,0 +1,41 @@
++#include "types.h"
++#include "x86.h"
++#include "defs.h"
++
++
++
++
++int
++sys_semget(void)
++{
++  int initvalue;
++  int semid;
++  argint(0, &semid);
++  argint(1, &initvalue);
++  return semget(semid,initvalue);
++}
++
++int
++sys_semfree(void)
++{
++  int semid;
++  argint(0, &semid);
++  return semfree(semid);
++
++}
++
++int
++sys_semdown(void)
++{
++  int semid;
++  argint(0, &semid);
++  return semdown(semid);
++}
++
++int
++sys_semup(void)
++{
++  int semid;
++  argint(0, &semid);
++  return semup(semid);
++}
+diff -rupN xv6-unrc/trap.c xv6-mod/trap.c
+--- xv6-unrc/trap.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/trap.c	2018-04-19 12:00:38.545841127 -0300
+@@ -22,7 +22,7 @@ tvinit(void)
+   for(i = 0; i < 256; i++)
+     SETGATE(idt[i], 0, SEG_KCODE<<3, vectors[i], 0);
+   SETGATE(idt[T_SYSCALL], 1, SEG_KCODE<<3, vectors[T_SYSCALL], DPL_USER);
+-  
++
+   initlock(&tickslock, "time");
+ }
+ 
+@@ -77,7 +77,7 @@ trap(struct trapframe *tf)
+             cpu->id, tf->cs, tf->eip);
+     lapiceoi();
+     break;
+-   
++
+   //PAGEBREAK: 13
+   default:
+     if(proc == 0 || (tf->cs&3) == 0){
+@@ -89,22 +89,32 @@ trap(struct trapframe *tf)
+     // In user space, assume process misbehaved.
+     cprintf("pid %d %s: trap %d err %d on cpu %d "
+             "eip 0x%x addr 0x%x--kill proc\n",
+-            proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip, 
++            proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip,
+             rcr2());
+     proc->killed = 1;
+   }
+ 
+   // Force process exit if it has been killed and is in user space.
+-  // (If it is still executing in the kernel, let it keep running 
++  // (If it is still executing in the kernel, let it keep running
+   // until it gets to the regular system call return.)
+   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
+     exit();
+ 
+   // Force process to give up CPU on clock tick.
+   // If interrupts were on while locks held, would need to check nlock.
+-  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER)
+-    yield();
++  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER){
++    proc->ticks++;
++    if(proc->ticks % TIMESLICE==0){
++      //cprintf("proceso pid=%d ejecuta el yield en el tick %d \n",proc->pid,proc->ticks);
++      proc->ticks=0;
++      yield();
++    }
++    if(ticks % TICKSFORAGING ==0){
++      //cprintf("ticks = %d pid %d\n",ticks,proc->pid);
++      aging();
++    }
+ 
++  }
+   // Check if the process has been killed since we yielded
+   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
+     exit();
+diff -rupN xv6-unrc/user/forktest.c xv6-mod/user/forktest.c
+--- xv6-unrc/user/forktest.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/user/forktest.c	2018-04-18 17:43:18.417432387 -0300
+@@ -21,11 +21,14 @@ forktest(void)
+   printf(1, "fork test\n");
+ 
+   for(n=0; n<N; n++){
++    if(n==5){     //en la sexta iteracion del ciclo, se ejecuta procstat
++      procstat();
++    }
+     pid = fork();
+     if(pid < 0)
+       break;
+     if(pid == 0)
+-      exit();
++     exit();
+   }
+   
+   if(n == N){
+diff -rupN xv6-unrc/user/param.h xv6-mod/user/param.h
+--- xv6-unrc/user/param.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/user/param.h	2018-05-09 22:15:09.737310406 -0300
+@@ -10,4 +10,11 @@
+ #define MAXOPBLOCKS  10  // max # of blocks any FS op writes
+ #define LOGSIZE      (MAXOPBLOCKS*3)  // max data sectors in on-disk log
+ #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
+-
++#define TIMESLICE    40  //amount of ticks per burst of execution
++#define MLFLEVELS    4   // amount of levels in the MLF structure
++#define MLFMAXLEVEL  0   // level of maximum priority in the mlf
++#define AGEFORSCALING  50  // age needed to climb the mlf levels
++#define TICKSFORAGING 100  //
++#define ACTIVATEAGING  1 // 1 for activate the priority increase by aging, 0 for disable
++#define MAXSEM  30  //
++#define MAXPROCSEM 5
+diff -rupN xv6-unrc/user/prioritytest1.c xv6-mod/user/prioritytest1.c
+--- xv6-unrc/user/prioritytest1.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/prioritytest1.c	2018-04-19 10:28:09.139064261 -0300
+@@ -0,0 +1,38 @@
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++void
++setprioritytest(void)
++{
++  int pid;
++
++  printf(1, "fork priotity\n");
++  pid = fork();
++  if (pid==0){
++    for (;;){
++      setpriority(0); 
++    }
++  }
++  else{
++    for(;;){
++
++    }
++  }  
++}
++
++int
++main(void)
++{
++  setprioritytest();
++  exit();
++}
+diff -rupN xv6-unrc/user/prioritytest.c xv6-mod/user/prioritytest.c
+--- xv6-unrc/user/prioritytest.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/prioritytest.c	2018-04-19 19:53:29.907509371 -0300
+@@ -0,0 +1,56 @@
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++
++#define N  1000
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++void
++prioritytest(void)
++{
++  int i;
++  int pid;
++  printf(1, "prioritytest\n");
++    fork();
++    for (i=0;i<2;i++){
++      pid=fork();
++
++      if(pid==0){
++        break;
++      }
++    }
++
++    if(pid != 0){
++      for(;;){
++        setpriority(0);
++      }
++    }
++    if(pid == 0){
++        //setpriority(3);
++        for(;;){
++          if(i %2==0){
++            setpriority(2);
++          }
++        }
++      }
++    }
++
++
++
++
++
++
++int
++main(void)
++{
++  prioritytest();
++  exit();
++}
+diff -rupN xv6-unrc/user/semaphoretest1.c xv6-mod/user/semaphoretest1.c
+--- xv6-unrc/user/semaphoretest1.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/semaphoretest1.c	2018-05-10 12:29:42.933062790 -0300
+@@ -0,0 +1,167 @@
++original
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++#include "param.h"
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++#include "fs.h"
++#include "fcntl.h"
++#include "syscall.h"
++#include "traps.h"
++#include "memlayout.h"
++
++#define N 1
++#define CANTCONSUMIDORES 1
++#define CANTPRODUCTORES 1
++
++
++
++int cola[N];
++int cantcola=0;
++
++int ql;
++int empty;
++int full;
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++
++
++void
++encolar (int nuevo)
++{
++  semdown(ql);
++  if(cantcola==0){
++    printf(1,"productor:encola en el indice0\n" );
++  }
++  if(cantcola==1){
++    printf(1,"productor:encola en el indice 1\n" );
++  }
++  if(cantcola==2){
++    printf(1,"productor:encola en el indice 2\n" );
++  }
++   cola[cantcola]=nuevo;
++
++   cantcola++;
++   if(cantcola==0){
++     printf(1,"productor:aumente cantcola a 0\n" );
++   }
++   if(cantcola==1){
++     printf(1,"productor:aumente cantcola a 1\n" );
++   }
++   if(cantcola==2){
++     printf(1,"productor:aumente cantcola a 2\n" );
++   }
++  semup(ql);
++}
++
++int
++desencolar()
++{
++   int res;
++   int i;
++  //int fd;
++  semdown(ql);
++  if(cantcola==0){
++    printf(1,"desencola cuando la cola no tiene elementos\n" );
++  }
++  if(cantcola==1){
++    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
++  }
++  if(cantcola==2){
++    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
++  }
++   res =cola[0];
++   cantcola--;
++   for(i=0;i<cantcola;i++){
++     cola[i]=cola[i+1];
++   }
++  // fd =open("archivo", O_CREATE|O_RDWR);
++  // printf(fd, "1 \n", res);
++  // close(fd);
++
++  semup(ql);
++
++   return res;
++  return 0;
++}
++
++
++void
++consumidor(void)
++{
++  for(;;) {
++    semdown(empty);
++    printf(1,"RESTE UNO EN EMPTY\n");
++    desencolar();
++    semup(full);
++    printf(1,"SUME UNO EN FULL\n");
++    printf(1,"-------\n");
++  }
++}
++
++void
++productor(void)
++{
++  int item=0;
++  for(;;) {
++    item=item+1;
++    semdown(full);
++    printf(1,"RESTE UNO EN FULL\n");
++    encolar(item);
++    semup(empty);
++    printf(1,"SUME UNO EN EMPTY\n");
++    printf(1,"--------------------\n");
++  }
++}
++
++void
++semtest(void)
++{
++  int i;
++  int pid=1;
++  for(i=0;i<CANTPRODUCTORES;i++){
++
++    pid=fork();
++
++    if(pid==0){
++      printf(1,"SOY PRODUCTOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    productor();
++  }
++
++  for(i=0;i<CANTCONSUMIDORES;i++){
++    pid=fork();
++    if(pid==0){
++      printf(1,"SOY CONSUMIDOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    consumidor();
++  }
++
++
++}
++
++
++int
++main(void)
++{
++
++  ql = semget(-1,1);
++  full= semget(-1,N);
++  empty= semget(-1,0);
++  semtest();
++  exit();
++}
+diff -rupN xv6-unrc/user/semaphoretest2.c xv6-mod/user/semaphoretest2.c
+--- xv6-unrc/user/semaphoretest2.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/semaphoretest2.c	2018-05-10 12:06:30.569026241 -0300
+@@ -0,0 +1,166 @@
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++#include "param.h"
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++#include "fs.h"
++#include "fcntl.h"
++#include "syscall.h"
++#include "traps.h"
++#include "memlayout.h"
++
++#define N 1
++#define CANTCONSUMIDORES 1
++#define CANTPRODUCTORES 1
++
++
++
++int cola[N];
++int cantcola=0;
++
++int ql;
++int empty;
++int full;
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++
++
++void
++encolar (int nuevo)
++{
++  semdown(ql);
++  if(cantcola==0){
++    printf(1,"productor:encola en el indice0\n" );
++  }
++  if(cantcola==1){
++    printf(1,"productor:encola en el indice 1\n" );
++  }
++  if(cantcola==2){
++    printf(1,"productor:encola en el indice 2\n" );
++  }
++   cola[cantcola]=nuevo;
++
++   cantcola++;
++   if(cantcola==0){
++     printf(1,"productor:aumente cantcola a 0\n" );
++   }
++   if(cantcola==1){
++     printf(1,"productor:aumente cantcola a 1\n" );
++   }
++   if(cantcola==2){
++     printf(1,"productor:aumente cantcola a 2\n" );
++   }
++  semup(ql);
++}
++
++int
++desencolar()
++{
++   int res;
++   int i;
++  //int fd;
++  semdown(ql);
++  if(cantcola==0){
++    printf(1,"desencola cuando la cola no tiene elementos\n" );
++  }
++  if(cantcola==1){
++    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
++  }
++  if(cantcola==2){
++    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
++  }
++   res =cola[0];
++   cantcola--;
++   for(i=0;i<cantcola;i++){
++     cola[i]=cola[i+1];
++   }
++  // fd =open("archivo", O_CREATE|O_RDWR);
++  // printf(fd, "1 \n", res);
++  // close(fd);
++
++  semup(ql);
++
++   return res;
++  return 0;
++}
++
++
++void
++consumidor(void)
++{
++  for(;;) {
++    semdown(empty);
++    printf(1,"RESTE UNO EN EMPTY\n");
++    desencolar();
++    semup(full);
++    printf(1,"SUME UNO EN FULL\n");
++    printf(1,"-------\n");
++  }
++}
++
++void
++productor(void)
++{
++  int item=0;
++  for(;;) {
++    item=item+1;
++    semdown(full);
++    printf(1,"RESTE UNO EN FULL\n");
++    encolar(item);
++    semup(empty);
++    printf(1,"SUME UNO EN EMPTY\n");
++    printf(1,"--------------------\n");
++  }
++}
++
++void
++semtest(void)
++{
++  int i;
++  int pid=1;
++  for(i=0;i<CANTPRODUCTORES;i++){
++
++    pid=fork();
++
++    if(pid==0){
++      printf(1,"SOY PRODUCTOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    productor();
++  }
++
++  for(i=0;i<CANTCONSUMIDORES;i++){
++    pid=fork();
++    if(pid==0){
++      printf(1,"SOY CONSUMIDOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    consumidor();
++  }
++
++
++}
++
++
++int
++main(void)
++{
++
++  ql = semget(-1,1);
++  full= semget(-1,N);
++  empty= semget(-1,0);
++  semtest();
++  exit();
++}
+diff -rupN xv6-unrc/user/semaphoretest3.c xv6-mod/user/semaphoretest3.c
+--- xv6-unrc/user/semaphoretest3.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/semaphoretest3.c	2018-05-09 23:44:40.539411101 -0300
+@@ -0,0 +1,39 @@
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++#include "param.h"
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++#include "fs.h"
++#include "fcntl.h"
++#include "syscall.h"
++#include "traps.h"
++#include "memlayout.h"
++
++#define N 10000
++
++
++
++
++
++int ql;
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++
++
++
++
++
++int
++main(void)
++{
++  cantcola=0;
++  ql = semget(-1,1);
++  semtest();
++  exit();
++}
+diff -rupN xv6-unrc/user/semaphoretest4.c xv6-mod/user/semaphoretest4.c
+--- xv6-unrc/user/semaphoretest4.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/semaphoretest4.c	2018-05-10 12:27:20.546561493 -0300
+@@ -0,0 +1,166 @@
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++#include "param.h"
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++#include "fs.h"
++#include "fcntl.h"
++#include "syscall.h"
++#include "traps.h"
++#include "memlayout.h"
++
++#define N 1
++#define CANTCONSUMIDORES 1
++#define CANTPRODUCTORES 1
++
++
++
++int cola[N];
++int cantcola=0;
++
++int ql;
++int empty;
++int full;
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++
++
++void
++encolar (int nuevo)
++{
++  semdown(ql);
++  if(cantcola==0){
++    printf(1,"productor:encola en el indice0\n" );
++  }
++  if(cantcola==1){
++    printf(1,"productor:encola en el indice 1\n" );
++  }
++  if(cantcola==2){
++    printf(1,"productor:encola en el indice 2\n" );
++  }
++   cola[cantcola]=nuevo;
++
++   cantcola++;
++   if(cantcola==0){
++     printf(1,"productor:aumente cantcola a 0\n" );
++   }
++   if(cantcola==1){
++     printf(1,"productor:aumente cantcola a 1\n" );
++   }
++   if(cantcola==2){
++     printf(1,"productor:aumente cantcola a 2\n" );
++   }
++  semup(ql);
++}
++
++int
++desencolar()
++{
++   int res;
++   int i;
++  //int fd;
++  semdown(ql);
++  if(cantcola==0){
++    printf(1,"desencola cuando la cola no tiene elementos\n" );
++  }
++  if(cantcola==1){
++    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
++  }
++  if(cantcola==2){
++    printf(1,"desencola cuando la cola  tiene 1 elementos\n" );
++  }
++   res =cola[0];
++   cantcola--;
++   for(i=0;i<cantcola;i++){
++     cola[i]=cola[i+1];
++   }
++  // fd =open("archivo", O_CREATE|O_RDWR);
++  // printf(fd, "1 \n", res);
++  // close(fd);
++
++  semup(ql);
++
++   return res;
++  return 0;
++}
++
++
++void
++consumidor(void)
++{
++  for(;;) {
++    semdown(full);
++    printf(1,"RESTE UNO EN FULL\n");
++    desencolar();
++    printf(1,"SUME UNO EN EMPTY\n");
++    printf(1,"-------\n");
++    semup(empty);
++  }
++}
++
++void
++productor(void)
++{
++  int item=0;
++  for(;;) {
++    semdown(empty);
++    item=item+1;
++    printf(1,"RESTE UNO EN EMPTY\n");
++    encolar(item);
++    printf(1,"SUME UNO EN FULL\n");
++    printf(1,"--------------------\n");
++    semup(full);
++  }
++}
++
++void
++semtest(void)
++{
++  int i;
++  int pid=1;
++  for(i=0;i<CANTPRODUCTORES;i++){
++
++    pid=fork();
++
++    if(pid==0){
++      printf(1,"SOY PRODUCTOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    productor();
++  }
++
++  for(i=0;i<CANTCONSUMIDORES;i++){
++    pid=fork();
++    if(pid==0){
++      printf(1,"SOY CONSUMIDOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    consumidor();
++  }
++
++
++}
++
++
++int
++main(void)
++{
++
++  ql = semget(-1,1);
++  full= semget(-1,0);
++  empty= semget(-1,N);
++  semtest();
++  exit();
++}
+diff -rupN xv6-unrc/user/semaphoretest.c xv6-mod/user/semaphoretest.c
+--- xv6-unrc/user/semaphoretest.c	1969-12-31 21:00:00.000000000 -0300
++++ xv6-mod/user/semaphoretest.c	2018-05-10 20:36:10.282449906 -0300
+@@ -0,0 +1,132 @@
++//original
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++#include "param.h"
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++#include "fs.h"
++#include "fcntl.h"
++#include "syscall.h"
++#include "traps.h"
++#include "memlayout.h"
++
++#define TAMANIOBUFFER 10
++#define CANTPRODUCTORES 1
++#define CANTCONSUMIDORES 1
++#define CANTPRODUCCIONES 200
++
++
++
++int fd=0;
++int ql;
++int empty;
++int full;
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++
++
++void
++encolar (int nuevo)
++{
++  semdown(ql);
++  printf(1,"PRODUCE\n");
++  write(fd, "+1", sizeof("+1"));
++  semup(ql);
++
++}
++
++int
++desencolar()
++{
++
++  semdown(ql);
++  printf(1,"CONSUME\n");
++  write(fd, "-1", sizeof("-1"));
++  semup(ql);
++
++  return 0;
++}
++
++
++void
++consumidor(void)
++{
++  for(;;) {
++    semdown(empty);
++    //printf(1,"RESTE UNO EN EMPTY\n");
++    desencolar();
++    semup(full);
++    //printf(1,"SUME UNO EN FULL\n");
++    printf(1,"-------\n");
++  }
++}
++
++void
++productor(void)
++{
++  int i;
++  for(i=0;i<CANTPRODUCCIONES;i++) {
++
++    semdown(full);
++    //printf(1,"RESTE UNO EN FULL\n");
++    encolar(i);
++    semup(empty);
++    //printf(1,"SUME UNO EN EMPTY\n");
++    //printf(1,"--------------------\n");
++  }
++}
++
++void
++semtest(void)
++{
++  int i;
++  int pid=1;
++  fd=open("logProdCons", O_CREATE|O_RDWR);
++
++  for(i=0;i<CANTPRODUCTORES;i++){
++
++    pid=fork();
++
++    if(pid==0){
++      printf(1,"SE INICIA UN HIJO PRODUCTOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    productor();
++  }
++
++  for(i=0;i<CANTCONSUMIDORES;i++){
++    pid=fork();
++    if(pid==0){
++      printf(1,"SE INICIA UN HIJO CONSUMIDOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    consumidor();
++  }
++
++
++}
++
++
++int
++main(void)
++{
++
++  ql = semget(-1,1);
++  full= semget(-1,TAMANIOBUFFER);
++  empty= semget(-1,0);
++
++  semtest();
++  exit();
++}
+diff -rupN "xv6-unrc/user/semaphoretestPUUNTEROS A LO RUSTICO.c" "xv6-mod/user/semaphoretestPUUNTEROS A LO RUSTICO.c"
+--- "xv6-unrc/user/semaphoretestPUUNTEROS A LO RUSTICO.c"	1969-12-31 21:00:00.000000000 -0300
++++ "xv6-mod/user/semaphoretestPUUNTEROS A LO RUSTICO.c"	2018-05-10 13:01:09.987212351 -0300
+@@ -0,0 +1,160 @@
++// Test that fork fails gracefully.
++// Tiny executable so that the limit can be filling the proc table.
++#include "param.h"
++#include "types.h"
++#include "stat.h"
++#include "user.h"
++#include "fs.h"
++#include "fcntl.h"
++#include "syscall.h"
++#include "traps.h"
++#include "memlayout.h"
++
++#define N 2
++#define CANTCONSUMIDORES 1
++#define CANTPRODUCTORES 1
++
++
++
++int cola[N];
++int cantcola=0;
++
++int ql;
++int empty;
++int full;
++
++void
++printf(int fd, char *s, ...)
++{
++  write(fd, s, strlen(s));
++}
++
++
++
++void
++encolar (int nuevo,int* colap,int* cantcolap)
++{
++  semdown(ql);
++  if((*cantcolap)==0){
++    printf(1,"productor:encola en el indice0\n" );
++  }
++  if((*cantcolap)==1){
++    printf(1,"productor:encola en el indice 1\n" );
++  }
++  if((*cantcolap)==2){
++    printf(1,"productor:encola en el indice 2\n" );
++  }
++   *(colap+(*cantcolap))=nuevo;
++
++   (*cantcolap)=(*cantcolap)+1;
++   if((*cantcolap)==0){
++     printf(1,"productor:aumente cantcola a 0\n" );
++   }
++   if((*cantcolap)==1){
++     printf(1,"productor:aumente cantcola a 1\n" );
++   }
++   if((*cantcolap)==2){
++     printf(1,"productor:aumente cantcola a 2\n" );
++   }
++  semup(ql);
++}
++
++int
++desencolar(int* colap,int* cantcolap)
++{
++   int res;
++   int i;
++  //int fd;
++  semdown(ql);
++  
++   res =*(cola);
++   *cantcolap=(*cantcolap)-1;
++   for(i=0;i<(*cantcolap);i++){
++     *(cola+i)=*(cola+i+1);
++   }
++  // fd =open("archivo", O_CREATE|O_RDWR);
++  // printf(fd, "1 \n", res);
++  // close(fd);
++
++  semup(ql);
++
++   return res;
++  return 0;
++}
++
++
++void
++consumidor(int* colap,int* cantcolap)
++{
++  int i;
++  for(i=0;i<2;i++) {
++    semdown(empty);
++    printf(1,"RESTE UNO EN EMPTY\n");
++    desencolar(colap,cantcolap);
++    semup(full);
++    printf(1,"SUME UNO EN FULL\n");
++    printf(1,"-------\n");
++  }
++}
++
++void
++productor(int* colap,int* cantcolap)
++{
++  int item=0;
++  int i;
++  for(i=0;i<2;i++) {
++    item=item+1;
++    semdown(full);
++    printf(1,"RESTE UNO EN FULL\n");
++    encolar(item,colap,cantcolap);
++    semup(empty);
++    printf(1,"SUME UNO EN EMPTY\n");
++    printf(1,"--------------------\n");
++  }
++}
++
++void
++semtest(int *colap, int* cantcolap)
++{
++  int i;
++  int pid=1;
++  for(i=0;i<CANTPRODUCTORES;i++){
++
++    pid=fork();
++
++    if(pid==0){
++      printf(1,"SOY PRODUCTOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    productor(colap,cantcolap);
++  }
++
++  for(i=0;i<CANTCONSUMIDORES;i++){
++    pid=fork();
++    if(pid==0){
++      printf(1,"SOY CONSUMIDOR\n" );
++      break;
++    }
++
++  }
++  if(pid==0){
++    consumidor(colap,cantcolap);
++  }
++
++
++}
++
++
++int
++main(void)
++{
++
++  ql = semget(-1,1);
++  full= semget(-1,N);
++  empty= semget(-1,0);
++  semtest(cola,&cantcola);
++  exit();
++}
+diff -rupN xv6-unrc/user/syscall.h xv6-mod/user/syscall.h
+--- xv6-unrc/user/syscall.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/user/syscall.h	2018-05-09 15:06:47.696653649 -0300
+@@ -20,3 +20,9 @@
+ #define SYS_link   19
+ #define SYS_mkdir  20
+ #define SYS_close  21
++#define SYS_procstat  22
++#define SYS_setpriority  23
++#define SYS_semget  24
++#define SYS_semfree  25
++#define SYS_semdown  26
++#define SYS_semup  27
+diff -rupN xv6-unrc/user/user.h xv6-mod/user/user.h
+--- xv6-unrc/user/user.h	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/user/user.h	2018-05-09 19:23:15.725969305 -0300
+@@ -23,6 +23,12 @@ int getpid(void);
+ char* sbrk(int);
+ int sleep(int);
+ int uptime(void);
++int procstat(void);
++void setpriority(int priority);
++int semget(int semid, int initvalue);
++int semfree(int semid);
++int semdown(int semid);
++int semup(int semid);
+ 
+ // ulib.c
+ int stat(char*, struct stat*);
+diff -rupN xv6-unrc/user/usertests.c xv6-mod/user/usertests.c
+--- xv6-unrc/user/usertests.c	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/user/usertests.c	2018-05-09 23:19:07.693586003 -0300
+@@ -539,7 +539,7 @@ fourfiles(void)
+         printf(1, "create failed\n");
+         exit();
+       }
+-      
++
+       memset(buf, '0'+pi, 512);
+       for(i = 0; i < 12; i++){
+         if((n = write(fd, buf, 500)) != 500){
+@@ -882,7 +882,7 @@ linkunlink()
+ 
+   if(pid)
+     wait();
+-  else 
++  else
+     exit();
+ 
+   printf(1, "linkunlink ok\n");
+@@ -951,7 +951,7 @@ subdir(void)
+   }
+   write(fd, "ff", 2);
+   close(fd);
+-  
++
+   if(unlink("dd") >= 0){
+     printf(1, "unlink dd (non-empty dir) succeeded!\n");
+     exit();
+@@ -1390,24 +1390,24 @@ forktest(void)
+     if(pid == 0)
+       exit();
+   }
+-  
++
+   if(n == 1000){
+     printf(1, "fork claimed to work 1000 times!\n");
+     exit();
+   }
+-  
++
+   for(; n > 0; n--){
+     if(wait() < 0){
+       printf(1, "wait stopped early\n");
+       exit();
+     }
+   }
+-  
++
+   if(wait() != -1){
+     printf(1, "wait got too many\n");
+     exit();
+   }
+-  
++
+   printf(1, "fork test OK\n");
+ }
+ 
+@@ -1424,7 +1424,7 @@ sbrktest(void)
+   // can one sbrk() less than a page?
+   a = sbrk(0);
+   int i;
+-  for(i = 0; i < 5000; i++){ 
++  for(i = 0; i < 5000; i++){
+     b = sbrk(1);
+     if(b != a){
+       printf(stdout, "sbrk test failed %d %x %x\n", i, a, b);
+@@ -1453,7 +1453,7 @@ sbrktest(void)
+   a = sbrk(0);
+   amt = (BIG) - (uint)a;
+   p = sbrk(amt);
+-  if (p != a) { 
++  if (p != a) {
+     printf(stdout, "sbrk test failed to grow big address space; enough phys mem?\n");
+     exit();
+   }
+@@ -1492,7 +1492,7 @@ sbrktest(void)
+     printf(stdout, "sbrk downsize failed, a %x c %x\n", a, c);
+     exit();
+   }
+-  
++
+   // can we read the kernel's memory?
+   for(a = (char*)(KERNBASE); a < (char*) (KERNBASE+2000000); a += 50000){
+     ppid = getpid();
+diff -rupN xv6-unrc/user/usys.S xv6-mod/user/usys.S
+--- xv6-unrc/user/usys.S	2015-04-08 15:02:06.000000000 -0300
++++ xv6-mod/user/usys.S	2018-05-09 15:10:56.929312811 -0300
+@@ -29,3 +29,9 @@ SYSCALL(getpid)
+ SYSCALL(sbrk)
+ SYSCALL(sleep)
+ SYSCALL(uptime)
++SYSCALL(procstat)
++SYSCALL(setpriority)
++SYSCALL(semget)
++SYSCALL(semfree)
++SYSCALL(semdown)
++SYSCALL(semup)

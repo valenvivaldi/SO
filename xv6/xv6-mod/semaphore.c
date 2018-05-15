@@ -29,19 +29,32 @@ semget(int semid,int initvalue)
 {
   int i;
   struct semaphore* s;
+  int res;
+  int indexofsem;
   acquire(&semtable.lock);
-  s = &semtable.sem[semsearch(semid)];
-  if(semid>=0 && s->counter==0){
-    return -1;    //el semaforo no esta en uso
+
+  indexofsem=semsearch(semid);
+  if(indexofsem==-3){
+    res=-3;
+    goto errsemget;
   }
+  s = &semtable.sem[indexofsem];
+  if(semid>=0 && s->counter==0){
+    res= -1;    //el semaforo no esta en uso
+    goto errsemget;
+  }
+
 
 
   if(semid == -1){
         s->id=s-semtable.sem;
         s->counter++;
         s->value = initvalue;
+        res=s->id;
   }else{
     s->counter++;
+    res=semid;
+
   }
 
   for(i=0;i<MAXPROCSEM;i++){
@@ -50,13 +63,14 @@ semget(int semid,int initvalue)
       break;
     }
   }
-  //printsemaphores();
+
 
   if(i==MAXPROCSEM){
-    return -2;
+    res= -2;
   }
+errsemget:
   release(&semtable.lock);
-  return s->id;
+  return res;
 }
 
 int
@@ -90,6 +104,7 @@ semdown(int semid)
   indexofsem=semObtained(semid);
   if(indexofsem==-1){
     res= -1;
+
   }else{
     s=proc->osemaphore[indexofsem];
     while (s->value==0){
@@ -98,11 +113,10 @@ semdown(int semid)
     }
     cprintf("pude bajar el sem %d\n",s->id);
     s->value--;
-//    printsemaphores();
+    res= 0;
   }
   cprintf("semdown del semaforo! %d\n",s->value);
   release(&semtable.lock);
-  res= 0;
   return res;
 }
 
@@ -145,7 +159,7 @@ semsearch(int semid){
     }
   }
   if(semid<0){
-    return -2;  //not avaible semaphores
+    return -3;  //not avaible semaphores
   }
   return -1;
 }
