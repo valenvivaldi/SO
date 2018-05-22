@@ -36,6 +36,7 @@ idtinit(void)
 void
 trap(struct trapframe *tf)
 {
+  uint tempsize;
   if(tf->trapno == T_SYSCALL){
     if(proc->killed)
       exit();
@@ -79,12 +80,31 @@ trap(struct trapframe *tf)
     break;
 
   //PAGEBREAK: 13
+  //if it is about accessing an unassigned page, it is assigned on demand! WIP
+
   default:
     if(proc == 0 || (tf->cs&3) == 0){
       // In kernel, it must be our mistake.
       cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
-              tf->trapno, cpu->id, tf->eip, rcr2());
+      tf->trapno, cpu->id, tf->eip, rcr2());
       panic("trap");
+    }
+
+    if(!(proc==0)&&tf->trapno == T_PGFLT){
+      if(rcr2()<proc->szbstack){
+          cprintf("trato de acceder fuera del limite del stack\n");
+          panic("!!");
+      }else{
+        // tempsize= proc->szbstack;
+        // while((rcr2()>PGROUNDUP(tempsize+PGSIZE))){
+        //   tempsize=PGROUNDUP(tempsize+PGSIZE);
+        // }
+        cprintf("trato de acceder fuera del las paginas allocadas, alloca bajo demanda\n");
+        tempsize=PGROUNDDOWN(rcr2());
+        allocuvm(proc->pgdir, tempsize, tempsize + PGSIZE);
+        break;
+      }
+
     }
     // In user space, assume process misbehaved.
     cprintf("pid %d %s: trap %d err %d on cpu %d "

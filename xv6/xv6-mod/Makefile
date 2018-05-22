@@ -161,6 +161,12 @@ _semaphoretest: user/semaphoretest.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _semaphoretest user/semaphoretest.o user/ulib.o user/usys.o
 	$(OBJDUMP) -S _semaphoretest > semaphoretest.asm
 
+_pagestest: user/pagestest.o $(ULIB)
+	# forktest has less library code linked in - needs to be small
+	# in order to be able to max out the proc table.
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _pagestest user/pagestest.o user/ulib.o user/usys.o
+	$(OBJDUMP) -S _pagestest > pagestest.asm
+
 mkfs: mkfs.c fs.h
 	gcc -Werror -Wall -o mkfs mkfs.c
 
@@ -176,6 +182,7 @@ UPROGS=\
 	_forktest\
 	_prioritytest\
 	_semaphoretest\
+	_pagestest\
 	_grep\
 	_init\
 	_kill\
@@ -255,7 +262,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 # check in that version.
 
 EXTRA=\
-	mkfs.c user/ulib.c user/user.h user/cat.c user/echo.c user/forktest.c user/prioritytest.c user/semaphoretest.c user/grep.c user/kill.c\
+	mkfs.c user/ulib.c user/user.h user/cat.c user/echo.c user/forktest.c user/prioritytest.c user/semaphoretest.c user/pagestest.c user/grep.c user/kill.c\
 	user/ln.c user/ls.c user/mkdir.c user/rm.c user/stressfs.c user/usertests.c user/wc.c user/zombie.c\
 	user/printf.c user/umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
