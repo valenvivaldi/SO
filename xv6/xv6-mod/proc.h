@@ -72,7 +72,7 @@ struct proc {
   ushort age;
   ushort timesscheduled;
   struct semaphore *osemaphore[MAXPROCSEM];
-  uint szbstack;            // the size of the process before initializing the stack
+  uint topstack;            // the size of the process before initializing the stack
 };
 
 // Process memory is laid out contiguously, low addresses first:

@@ -18,4 +18,4 @@
 #define ACTIVATEAGING  1 // 1 for activate the priority increase by aging, 0 for disable
 #define MAXSEM  30  //
 #define MAXPROCSEM 5
-#define MAXPROCPAGES 5  // max pages of stack for each process
+#define MAXSTACKPAGES 5  // max pages of stack for each process

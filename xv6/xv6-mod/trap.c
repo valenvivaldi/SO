@@ -36,7 +36,6 @@ idtinit(void)
 void
 trap(struct trapframe *tf)
 {
-  uint tempsize;
   if(tf->trapno == T_SYSCALL){
     if(proc->killed)
       exit();
@@ -90,18 +89,17 @@ trap(struct trapframe *tf)
       panic("trap");
     }
 
-    if(!(proc==0)&&tf->trapno == T_PGFLT){
-      if(rcr2()<proc->szbstack){
+    if(proc != 0 && tf->trapno == T_PGFLT){
+      uint cr2 = rcr2();
+      uint basepgaddr;
+      if(cr2 >= proc->topstack && cr2 < proc->topstack+ MAXSTACKPAGES*PGSIZE ){
+          cprintf("rcr2 : %d\n proc->topstack: %d",cr2,proc->topstack);
           cprintf("trato de acceder fuera del limite del stack\n");
-          panic("!!");
-      }else{
-        // tempsize= proc->szbstack;
-        // while((rcr2()>PGROUNDUP(tempsize+PGSIZE))){
-        //   tempsize=PGROUNDUP(tempsize+PGSIZE);
-        // }
+
+        cprintf("rcr2 : %d\n proc->topstack: %d",cr2,proc->topstack);
         cprintf("trato de acceder fuera del las paginas allocadas, alloca bajo demanda\n");
-        tempsize=PGROUNDDOWN(rcr2());
-        allocuvm(proc->pgdir, tempsize, tempsize + PGSIZE);
+        basepgaddr=PGROUNDDOWN(cr2);
+        allocuvm(proc->pgdir, basepgaddr, basepgaddr + PGSIZE);
         break;
       }
 

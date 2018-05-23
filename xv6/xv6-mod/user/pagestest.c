@@ -5,6 +5,8 @@
 
 #define N  300
 
+int array[100];
+
 void
 printf(int fd, char *s, ...)
 {
@@ -38,6 +40,8 @@ pagestest(int a)
 int
 main(void)
 {
+  array[0]=1;
+
   printf(1, "pages test started!\n");
   pagestest(N);
   printf(1, "pages test finished!\n");
