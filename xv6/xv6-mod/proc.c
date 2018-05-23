@@ -318,11 +318,16 @@ void
 scheduler(void)
 {
   struct proc *p;
+  unsigned char picked=1;
   int level;
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
+    if (!picked){
+      hlt();
+    }
+    picked=0;
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
@@ -333,6 +338,7 @@ scheduler(void)
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
+        picked=1;
         proc = p;
         switchuvm(p);
         p->state = RUNNING;                       //puts in "RUNNING" the chosen process
