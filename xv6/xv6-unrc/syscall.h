@@ -20,3 +20,9 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_procstat  22
+#define SYS_setpriority  23
+#define SYS_semget  24
+#define SYS_semfree  25
+#define SYS_semdown  26
+#define SYS_semup  27

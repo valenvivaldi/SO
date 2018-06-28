@@ -7,6 +7,7 @@
 #include "mmu.h"
 #include "proc.h"
 
+
 int
 sys_fork(void)
 {
@@ -61,7 +62,7 @@ sys_sleep(void)
 {
   int n;
   uint ticks0;
-  
+
   if(argint(0, &n) < 0)
     return -1;
   acquire(&tickslock);
@@ -83,9 +84,37 @@ int
 sys_uptime(void)
 {
   uint xticks;
-  
+
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+//
+int
+sys_procstat(void)
+{
+  //cprintf("SE EJECUTA EL SYS_PROCSTAT\n");
+  procdump();// ejecutamos la funcion procdump definida en proc.c
+  return 0;
+}
+
+// change the priority of the process to the specified value
+//
+int
+sys_setpriority(void)
+{
+    int priority;
+    if(argint(0, &priority) < 0){
+      return -1;
+    }
+    if(priority>=0 &&priority<MLFLEVELS){
+      proc->priority=priority;
+      return 0;
+    }
+    else{
+      return -1;
+    }
+
 }

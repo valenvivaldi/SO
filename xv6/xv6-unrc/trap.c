@@ -22,7 +22,7 @@ tvinit(void)
   for(i = 0; i < 256; i++)
     SETGATE(idt[i], 0, SEG_KCODE<<3, vectors[i], 0);
   SETGATE(idt[T_SYSCALL], 1, SEG_KCODE<<3, vectors[T_SYSCALL], DPL_USER);
-  
+
   initlock(&tickslock, "time");
 }
 
@@ -77,34 +77,62 @@ trap(struct trapframe *tf)
             cpu->id, tf->cs, tf->eip);
     lapiceoi();
     break;
-   
+
   //PAGEBREAK: 13
+  //if it is about accessing an unassigned page, it is assigned on demand! WIP
+
   default:
     if(proc == 0 || (tf->cs&3) == 0){
       // In kernel, it must be our mistake.
       cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
-              tf->trapno, cpu->id, tf->eip, rcr2());
+      tf->trapno, cpu->id, tf->eip, rcr2());
       panic("trap");
+    }
+
+    if(proc != 0 && tf->trapno == T_PGFLT){
+      uint cr2 = rcr2();
+      uint basepgaddr;
+      if(cr2 >= proc->topstack && cr2 < proc->topstack+ MAXSTACKPAGES*PGSIZE ){
+          cprintf("rcr2 : %d\n proc->topstack: %d",cr2,proc->topstack);
+          cprintf("trato de acceder fuera del limite del stack\n");
+
+        cprintf("rcr2 : %d\n proc->topstack: %d",cr2,proc->topstack);
+        cprintf("trato de acceder fuera del las paginas allocadas, alloca bajo demanda\n");
+        basepgaddr=PGROUNDDOWN(cr2);
+        allocuvm(proc->pgdir, basepgaddr, basepgaddr + PGSIZE);
+        break;
+      }
+
     }
     // In user space, assume process misbehaved.
     cprintf("pid %d %s: trap %d err %d on cpu %d "
             "eip 0x%x addr 0x%x--kill proc\n",
-            proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip, 
+            proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip,
             rcr2());
     proc->killed = 1;
   }
 
   // Force process exit if it has been killed and is in user space.
-  // (If it is still executing in the kernel, let it keep running 
+  // (If it is still executing in the kernel, let it keep running
   // until it gets to the regular system call return.)
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
     exit();
 
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
-  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER)
-    yield();
+  if(proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER){
+    proc->ticks++;
+    if(proc->ticks % TIMESLICE==0){
+      //cprintf("proceso pid=%d ejecuta el yield en el tick %d \n",proc->pid,proc->ticks);
+      proc->ticks=0;
+      yield();
+    }
+    if(ticks % TICKSFORAGING ==0){
+      //cprintf("ticks = %d pid %d\n",ticks,proc->pid);
+      aging();
+    }
 
+  }
   // Check if the process has been killed since we yielded
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
     exit();

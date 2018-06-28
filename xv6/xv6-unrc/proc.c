@@ -10,7 +10,11 @@
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
+  struct proc* mlf[MLFLEVELS];
 } ptable;
+
+
+
 
 static struct proc *initproc;
 
@@ -55,11 +59,11 @@ found:
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
-  
+
   // Leave room for trap frame.
   sp -= sizeof *p->tf;
   p->tf = (struct trapframe*)sp;
-  
+
   // Set up new context to start executing at forkret,
   // which returns to trapret.
   sp -= 4;
@@ -70,17 +74,56 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  //set priority 0 by default
+  p->priority = 0;
+
   return p;
 }
 
 //PAGEBREAK: 32
+
+void
+makerunnable (struct proc* p)
+{
+  int priority;
+  struct proc* lastOfLevel ;
+  p->state = RUNNABLE;
+  p->next=0;
+  p->age=0;
+  priority=p->priority;
+  lastOfLevel = ptable.mlf[priority];
+
+  if(lastOfLevel ==0){   //If the level does not have processes, it saves the process as the first
+    ptable.mlf[priority]=p;
+  }else{
+    while(lastOfLevel->next != 0){ // if not, I take the first and advance until I reach the last
+      lastOfLevel=lastOfLevel->next;
+    }
+    lastOfLevel->next=p;  //and I keep it as the last
+  }
+}
+
+struct proc*
+unqueue(int level)
+{
+  struct proc* res;
+  res=0;
+  if(ptable.mlf[level]!=0){
+    res =ptable.mlf[level];
+    ptable.mlf[level]=ptable.mlf[level]->next;
+    res->next=0;
+  }
+  return res;
+}
+
+
 // Set up first user process.
 void
 userinit(void)
 {
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
-  
+
   p = allocproc();
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -99,7 +142,9 @@ userinit(void)
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
 
-  p->state = RUNNABLE;
+  //cprintf(" antes make runabbele de userinit \n");
+  makerunnable(p);
+  //cprintf("despues make runabbele de userinit \n");
 }
 
 // Grow current process's memory by n bytes.
@@ -108,7 +153,7 @@ int
 growproc(int n)
 {
   uint sz;
-  
+
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
@@ -143,6 +188,7 @@ fork(void)
     return -1;
   }
   np->sz = proc->sz;
+  np->topstack = proc->topstack;
   np->parent = proc;
   *np->tf = *proc->tf;
 
@@ -152,17 +198,23 @@ fork(void)
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
       np->ofile[i] = filedup(proc->ofile[i]);
+
+//duplicates the semaphore array
+  for(i = 0; i < MAXPROCSEM; i++)
+    if(proc->osemaphore[i])
+      np->osemaphore[i] = semaphoredup(proc->osemaphore[i]);
+
   np->cwd = idup(proc->cwd);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
- 
+
   pid = np->pid;
 
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
-  np->state = RUNNABLE;
+  makerunnable(np);
   release(&ptable.lock);
-  
+
   return pid;
 }
 
@@ -266,29 +318,42 @@ void
 scheduler(void)
 {
   struct proc *p;
-
+  unsigned char picked=1;
+  int level;
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
+    if (!picked){
+      hlt();
+    }
+    picked=0;
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-      swtch(&cpu->scheduler, proc->context);
-      switchkvm();
+    for(level = MLFMAXLEVEL; level < MLFLEVELS; level++){
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      proc = 0;
+      if(ptable.mlf[level] != 0){
+        p = ptable.mlf[level];
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        picked=1;
+        proc = p;
+        switchuvm(p);
+        p->state = RUNNING;                       //puts in "RUNNING" the chosen process
+        p->timesscheduled++;
+        unqueue(level);
+
+
+        swtch(&cpu->scheduler, proc->context);
+        switchkvm();
+
+        // Process is done running for now.
+        // It should have changed its p->state before coming back.
+        proc = 0;
+        break;
+      }
     }
     release(&ptable.lock);
 
@@ -320,7 +385,10 @@ void
 yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
-  proc->state = RUNNABLE;
+  if(proc->priority < (MLFLEVELS-1)){
+    proc->priority=(proc->priority)+1;
+  }
+  makerunnable(proc);
   sched();
   release(&ptable.lock);
 }
@@ -336,12 +404,12 @@ forkret(void)
 
   if (first) {
     // Some initialization functions must be run in the context
-    // of a regular process (e.g., they call sleep), and thus cannot 
+    // of a regular process (e.g., they call sleep), and thus cannot
     // be run from main().
     first = 0;
     initlog();
   }
-  
+
   // Return to "caller", actually trapret (see allocproc).
 }
 
@@ -391,8 +459,13 @@ wakeup1(void *chan)
   struct proc *p;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
-      p->state = RUNNABLE;
+    if(p->state == SLEEPING && p->chan == chan){
+      if(p->priority>MLFMAXLEVEL){
+        p->priority--;
+      }
+      makerunnable(p);
+    }
+
 }
 
 // Wake up all processes sleeping on chan.
@@ -418,7 +491,7 @@ kill(int pid)
       p->killed = 1;
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING)
-        p->state = RUNNABLE;
+        makerunnable(p);
       release(&ptable.lock);
       return 0;
     }
@@ -446,7 +519,7 @@ procdump(void)
   struct proc *p;
   char *state;
   uint pc[10];
-  
+
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
@@ -460,6 +533,50 @@ procdump(void)
       for(i=0; i<10 && pc[i] != 0; i++)
         cprintf(" %p", pc[i]);
     }
+    cprintf(" prioridad: %d",p->priority); //shows the priority of the process
+    cprintf(" edad: %d",p->age); //shows the priority of the process
+    cprintf(" sch: %d",p->timesscheduled);
     cprintf("\n");
   }
+}
+
+
+
+void
+raisepriority(int level )         //unqueue, modify the priority and enqueue
+{
+    struct proc* oldprocess;
+    oldprocess = unqueue(level);
+    if(oldprocess){
+      oldprocess->priority = level-1;
+      makerunnable(oldprocess);
+    }
+}
+
+
+void
+aging()
+{
+  struct proc *p;
+  int level;
+  acquire(&ptable.lock);
+  for (level=MLFMAXLEVEL; level < MLFLEVELS; level++) { // i go through the levels of the mlf
+    p =ptable.mlf[level];
+    while(p){
+      p->age++;                             // increase the age
+      if( (p->age == AGEFORSCALING && level != MLFMAXLEVEL)){ // check if the process deserves a priority increase
+        procdump();                         //prints the processes BEFORE the priority increase
+        if(ACTIVATEAGING){                 //ACTIVATEAGING value is in param.h !
+          raisepriority(level);
+          cprintf("---------------------------------\n");
+          procdump();                     //prints the processes AFTER the priority increase
+        }
+        cprintf("//////////////////////////////////////\n");
+        p=ptable.mlf[level];              // now will continue with the new first level process
+      }else{
+        p=p->next;                        //from here only increases the age, because they will be younger
+      }
+    }
+  }
+  release(&ptable.lock);
 }
